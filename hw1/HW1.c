@@ -24,7 +24,11 @@ double s  = 10;
 double b  = 2.666;
 double r  = 28;
 double x = 0.01, y = 0.01, z = 0.01 , dt = 0.01;
-
+double x1[10000];double ynew[10000];double z1[10000];
+#define Cos(th) cos(3.1415927/180*(th))
+#define Sin(th) sin(3.1415927/180*(th))
+double asp = 1;
+int fov=20;
 
 
 //  OpenGL with prototypes for glext
@@ -64,6 +68,21 @@ void Print(const char* format , ...)
 	  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*ch++);
 }
 
+
+void lorenz(double x1[], double y1[], double z1[]) {
+	for (int i = 0; i < 10000; i++) {
+
+				double dx = s*(y-x);
+				double dy = x*(r-z)-y;
+				double dz = (x*y) - (b*z);
+				x += dt*dx;
+				y += dt*dy;
+				z += dt*dz;
+				x1[i] = x;
+				y1[i] = y;
+				z1[i] = z;
+		 }
+}
 /*
  *  Display the scene
  */
@@ -71,13 +90,18 @@ void display()
 {
 	//  Clear the image
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//  Reset previous transforms
-	glMatrixMode(GL_PROJECTION);
+	glEnable(GL_DEPTH_TEST);	
+		//  Reset previous transforms
+	// glMatrixMode(GL_PROJECTION);
 	//  Undo previous transformations
 	glLoadIdentity();
 
-	glRotated(ph,1,0,0);
-	glRotated(th,0,1,0);
+	// glRotated(ph,1,0,0);
+	// glRotated(th,0,1,0);
+   double Ex = -2*dim*Sin(th)*Cos(ph);
+   double Ey = +2*dim        *Sin(ph);
+   double Ez = +2*dim*Cos(th)*Cos(ph);
+   gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
 
   
 // Create Axis
@@ -106,17 +130,21 @@ void display()
 	glColor3f(.1,0.5,1);
 	glPointSize(5);
 	// Perform Lorenz Equations N times. Image ideal around N = 10,000  
-	  for (int i = 0; i < 10000; i++) {
+	  // for (int i = 0; i < 10000; i++) {
 
-				double dx = s*(y-x);
-				double dy = x*(r-z)-y;
-				double dz = (x*y) - (b*z);
-				x += dt*dx;
-				y += dt*dy;
-				z += dt*dz;
-			glVertex4d(x, y, z, w);
-		 }
+			// 	double dx = s*(y-x);
+			// 	double dy = x*(r-z)-y;
+			// 	double dz = (x*y) - (b*z);
+			// 	x += dt*dx;
+			// 	y += dt*dy;
+			// 	z += dt*dz;
+			// glVertex4d(x, y, z, w);
+		 // }
+	// lorenz(x1,ynew,z1);
+	for (int i = 0; i < 10000; i++) {
 
+		glVertex4d(x1[i],ynew[i],z1[i],w);
+	}
 
 
 	glEnd();
@@ -140,41 +168,55 @@ void key(unsigned char ch,int x,int y)
 	  th = ph = 0;
 	// Modify parameters
 	else if (ch == '1') {
-	  if (r >= 1) 
-	  	r -= 1; 
+	  if (r >= 1) {
+	  	r -= 1;
+	  	lorenz(x1,ynew,z1);
+	  }
 	  else
 	  	Print("NA");
 	}
 	else if (ch == '2')
-	  if (r <= 50) 
-	  	r+= 1; 
+	  if (r <= 50) {
+	  	r+= 1;
+	  	lorenz(x1,ynew,z1);
+	  }
 	  else
 	  	Print("NA");
 	else if (ch == '3') {
-	  if (s >= 0.5)
+	  if (s >= 0.5) {
 	  	s -= 0.5;
+	  	lorenz(x1,ynew,z1);
+	  }
 	  else 
 	    Print("NA");
 	}
-	else if (ch == '4')
+	else if (ch == '4') {
 	  s += 0.5;
+	  lorenz(x1,ynew,z1);
+	}
 	else if (ch == '5') {
-	  if (b >= 0.1)
+	  if (b >= 0.1) {
 	  	b -= 0.1;
+	  	lorenz(x1,ynew,z1);
+	  }
 	  else 
 	  	Print("NA");
 	}
-	else if (ch == '6')
+	else if (ch == '6') {
 	  b += 0.1;
-	
+	  lorenz(x1,ynew,z1);
+	}
 	// Increase w by 0.1
-	else if (ch == '+')
+	else if (ch == '+') {
 	  w += 0.1;
-	
+	  lorenz(x1,ynew,z1);
+	}
 	//  Decrease w by 0.1
 	else if (ch == '-') {
-	  if (w >= 0.1)
+	  if (w >= 0.1) {
 	  	w -= 0.1;
+	  	lorenz(x1,ynew,z1);
+	  }
 	  else 
 	  	Print("NA");
 	}
@@ -217,7 +259,8 @@ void special(int key,int x,int y)
 void reshape(int width,int height)
 {
 	//  Ratio of the width to the height of the window
-	double w2h = (height>0) ? (double)width/height : 1;
+	// double w2h = (height>0) ? (double)width/height : 1;
+	asp = (height>0) ? (double)width/height : 1;
 	//  Set the viewport to the entire window
 	glViewport(0,0, width,height);
 	//  Tell OpenGL we want to manipulate the projection matrix
@@ -226,7 +269,14 @@ void reshape(int width,int height)
 	glLoadIdentity();
 	//  Orthogonal projection box adjusted for the
 	//  aspect ratio of the window
-	glOrtho(-dim*w2h,+dim*w2h, -dim,+dim, -dim,+dim);
+	// glOrtho(-dim*asp,+dim*w2h, -dim,+dim, -dim,+dim);
+	// glMatrixMode(GL_PROJECTION);
+   //  Undo previous transformations
+   //  Perspective transformation
+    gluPerspective(fov,asp,dim/4,4*dim);
+   //  Switch to manipulating the model matrix
+   
+
 	//  Switch to manipulating the model matrix
 	glMatrixMode(GL_MODELVIEW);
 	//  Undo previous transformations
@@ -239,10 +289,12 @@ void reshape(int width,int height)
 int main(int argc,char* argv[])
 {
   //  Initialize GLUT and process user parameters
+	lorenz(x1,ynew,z1);
 	glutInit(&argc,argv);
 	//  Request double buffered, true color window 
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	//  Request 650 x 600 pixel window
+	// glutInitWindowPosition(100,100);
 	glutInitWindowSize(650,600);
 	//  Create the window
 	glutCreateWindow("Lorenz Attractor");
