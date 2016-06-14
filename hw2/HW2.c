@@ -1,16 +1,18 @@
 /*
- *  Projections
+ *  Homework 2
  *
- *  Draw 27 cubes to demonstrate orthogonal & prespective projections
+ *  Draw a few 3d objects. Includes a rocket, spere, and cylinder.
  *
  *  Key bindings:
- *  m          Toggle between perspective and orthogonal
+ *  0,1,2      Toggle between orthogonal(0),perspective(1),first person perspective(2)
  *  +/-        Changes field of view for perspective
- *  a          Toggle axes
- *  arrows     Change view angle
+ *  b/B        Toggle axes
+ *  arrows     Change view angle(for perspective and orthogonal ONLY)
  *  PgDn/PgUp  Zoom in and out
- *  0          Reset view angle
+ *  a/w/s/d    move left/move in/move out/move right in first person perspective     
+ *  4          Reset view angle
  *  ESC        Exit
+ *  
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,12 +28,16 @@
 
 int axes=0;       //  Display axes
 int mode=0;       //  Projection mode
-int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
+int th=-5;         //  Azimuth of view angle
+int ph=35;         //  Elevation of view angle
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=3.0;   //  Size of world
+double dim=5.0;   //  Size of world
 double zh=0;      //  Rotation of teapot
+float xpos = 0.0;
+float ypos = 1.0;
+float zpos = 10.0;
+float yrot = 0.0;
 
 //  Macro for sin & cos in degrees
 #define Cos(th) cos(3.1415927/180*(th))
@@ -66,7 +72,7 @@ static void Project()
    //  Undo previous transformations
    glLoadIdentity();
    //  Perspective transformation
-   if (mode)
+   if (mode == 1 || mode == 2)
       gluPerspective(fov,asp,dim/4,4*dim);
    //  Orthogonal projection
    else
@@ -83,73 +89,20 @@ static void Project()
  *     dimentions (dx,dy,dz)
  *     rotated th about the y axis
  */
-static void cube(double x,double y,double z,
-                 double dx,double dy,double dz,
-                 double th)
-{
-   //  Save transformation
-   glPushMatrix();
-   //  Offset
-   glTranslated(x,y,z);
-   glRotated(th,0,1,0);
-   glScaled(dx,dy,dz);
-   //  Cube
-   glBegin(GL_QUADS);
-   //  Front
-   glColor3f(1,0,0);
-   glVertex3f(-1,-1, 1);
-   glVertex3f(+1,-1, 1);
-   glVertex3f(+1,+1, 1);
-   glVertex3f(-1,+1, 1);
-   //  Back
-   glColor3f(0,0,1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(-1,+1,-1);
-   glVertex3f(+1,+1,-1);
-   //  Right
-   glColor3f(1,1,0);
-   glVertex3f(+1,-1,+1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(+1,+1,-1);
-   glVertex3f(+1,+1,+1);
-   //  Left
-   glColor3f(0,1,0);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(-1,-1,+1);
-   glVertex3f(-1,+1,+1);
-   glVertex3f(-1,+1,-1);
-   //  Top
-   glColor3f(0,1,1);
-   glVertex3f(-1,+1,+1);
-   glVertex3f(+1,+1,+1);
-   glVertex3f(+1,+1,-1);
-   glVertex3f(-1,+1,-1);
-   //  Bottom
-   glColor3f(1,0,1);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(+1,-1,+1);
-   glVertex3f(-1,-1,+1);
-   //  End
-   glEnd();
-   //  Undo transofrmations
-   glPopMatrix();
-}
+
 static void Vertex(double th,double ph)
 {
    glColor3f(Cos(th)*Cos(th) , Sin(ph)*Sin(ph) , Sin(th)*Sin(th));
    glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
 }
-static void SolidPlane(double x,double y,double z,
+static void rocket(double x,double y,double z,
                        double dx,double dy,double dz,
-                       double ux,double uy, double uz)
+                       double ux,double uy, double uz,double sx, double sy, double sz)
 {
    // Dimensions used to size airplane
    const double wid=0.03*2;
    const double nose=+0.50*2;
    const double cone= 0.20*2;
-   const double wing= 0.00;
    const double strk=-0.20*2;
    const double tail=-0.50*2;
    //  Unit vector in direction of flght
@@ -179,6 +132,7 @@ static void SolidPlane(double x,double y,double z,
    glTranslated(x,y,z);
    glMultMatrixd(mat);
    //  Nose (4 sided)
+   glScaled(sx,sy,sz);
    glColor3f(0,0,1);
    glBegin(GL_TRIANGLES);
    glVertex3d(nose, 0.0, 0.0);
@@ -252,12 +206,10 @@ static void SolidPlane(double x,double y,double z,
    glVertex3d(tail+.1,-wid1,-wid1);
    glVertex3d(tail+.1,-wid1, wid1);
 
-   glVertex3d(tail+0.1,-wid1, wid1);
+   glVertex3d(tail+.1,-wid1, wid1);
    glVertex3d(tail+.1, wid1, wid1);
    glVertex3d(tail+.1, wid1,-wid1);
    glVertex3d(tail+.1,-wid1,-wid1);
-
-
    glEnd();
    
    // Rocket tails
@@ -280,20 +232,123 @@ static void SolidPlane(double x,double y,double z,
    glVertex3d(strk-.3, 0.0, 0.0);
    glVertex3d(tail-.1, 0.0, 0.0);
    glVertex3d(tail-.1, 0.0, -0.3);
-
-
    glEnd();
+   // fire
+   glColor3f(1,0.6,0);
+   glBegin(GL_TRIANGLE_FAN);
+   glVertex3d(tail-.1,-0.15,0.0);
+   glVertex3d(tail-.1,0.15,0.0);
+   glVertex3d(tail-.3,0.0,-0.2);
+
+   glVertex3d(tail-.1,-0.15,0.0);
+   glVertex3d(tail-.1,0.15,0.0);
+   glVertex3d(tail-.3,0.0,0.2);
+   glEnd();
+   
    //  Undo transformations
    glPopMatrix();
 }
 
+static void sphere1(double x,double y,double z,double r)
+{
+   const int d=5;
+   int th,ph;
 
+   //  Save transformation
+   glPushMatrix();
+   //  Offset and scale
+   glTranslated(x,y,z);
+   glScaled(r,r,r);
+
+   //  South pole cap
+   glBegin(GL_TRIANGLE_FAN);
+   Vertex(0,-90);
+   for (th=0;th<=360;th+=d)
+   {
+      Vertex(th,d-90);
+   }
+   glEnd();
+
+   //  Latitude bands
+   for (ph=d-90;ph<=90-2*d;ph+=d)
+   {
+      glBegin(GL_QUAD_STRIP);
+      for (th=0;th<=360;th+=d)
+      {
+         Vertex(th,ph);
+         Vertex(th,ph+d);
+      }
+      glEnd();
+   }
+
+   //  North pole cap
+   glBegin(GL_TRIANGLE_FAN);
+   Vertex(0,90);
+   for (th=0;th<=360;th+=d)
+   {
+      Vertex(th,90-d);
+   }
+   glEnd();
+
+   //  Undo transformations
+   glPopMatrix();
+}
+#define PI 3.1415927
+
+/************************** draw_cylinder() **************************
+ * This function will draw the cylinder
+ *
+ *   @parameter1: radius = The radius of cylinder
+ *   @parameter2: height = Height of the cylinder
+ *   @parameter3: R = Red value of the cylinder's color
+ *   @parameter4: G = Green value of the cylinder's color
+ *   @parameter5: B = Blue value of the cylinder's color
+ *
+ *   @return: Nothing
+ */
+ // modified from here: https://gist.github.com/nikAizuddin/5ea402e9073f1ef76ba6
+void cylinder(double radius,double height, double sx,double sy, double sz)
+{
+    double x              = 0.0;
+    double y              = 0.0;
+    double angle          = 0.0;
+    double angle_stepsize = 0.1;
+
+   // tube
+    glColor3f(0.2,0.5,0.5);
+    glScaled(sx,sy,sz);
+    glBegin(GL_QUAD_STRIP);
+    angle = 0.0;
+        while( angle < 2*PI ) {
+            x = radius * cos(angle);
+            y = radius * sin(angle);
+            glVertex3f(x, y , height);
+            glVertex3f(x, y , 0.0);
+            angle = angle + angle_stepsize;
+        }
+        glVertex3f(radius, 0.0, height);
+        glVertex3f(radius, 0.0, 0.0);
+    glEnd();
+
+    // Top Circle 
+    glColor3f(0.2,0.5,0.0);
+    glBegin(GL_POLYGON);
+    angle = 0.0;
+        while( angle < 2*PI ) {
+            x = radius * cos(angle);
+            y = radius * sin(angle);
+            glVertex3f(x, y , height);
+            angle = angle + angle_stepsize;
+        }
+        glVertex3f(radius, 0.0, height);
+    glEnd();
+}
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
 void display()
 {
-   int i,j,k;
+  
    const double len=1.5;  //  Length of axes
    //  Erase the window and the depth buffer
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -302,7 +357,7 @@ void display()
    //  Undo previous transformations
    glLoadIdentity();
    //  Perspective - set eye position
-   if (mode)
+   if (mode == 1)
    {
       double Ex = -2*dim*Sin(th)*Cos(ph);
       double Ey = +2*dim        *Sin(ph);
@@ -310,18 +365,22 @@ void display()
       gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
    }
    //  Orthogonal - set world orientation
-   else
+   else if (mode == 0)
    {
       glRotatef(ph,1,0,0);
       glRotatef(th,0,1,0);
    }
-   
-   cube(0,0,0 , 0.3,0.3,0.3 , 0);
-   SolidPlane(-1, 1, 0 ,-1,0,0 , 0,1,0);
-   SolidPlane(Cos(zh),Sin(zh), 0 ,-Sin(zh),Cos(zh),0 , Cos(4*zh),0,Sin(4*zh));
+   else if (mode == 2) {
+      float xtrans = -xpos;
+      float ztrans = -zpos;
+      float ytrans = -ypos;
+      float sceneroty = 360.0f - yrot;
 
-
-   //  Draw axes
+      glRotatef(ph,1,0,0);
+      glRotatef(sceneroty,0,1,0);
+      glTranslatef(xtrans,ytrans,ztrans); 
+      // Draw_Grid();  
+   }
    glColor3f(1,1,1);
    if (axes)
    {
@@ -345,6 +404,20 @@ void display()
    glWindowPos2i(5,5);
    Print("Angle=%d,%d  Dim=%.1f FOV=%d Projection=%s",th,ph,dim,fov,mode?"Perpective":"Orthogonal");
    //  Render the scene and make it visible
+  
+   
+   rocket(-1, 1, 0 ,-1,0,0 , 0,1,0,0.45,0.45,0.45);
+   rocket(Cos(zh),Sin(zh), 0 ,-Sin(zh),Cos(zh),0 , Cos(4*zh),0,Sin(4*zh),.75,.75,.75);
+   sphere1(-0.5,0.2,-0.9 , .85);
+   // glBegin()
+   glTranslatef(0.2,-0.4,1.0);
+   glRotatef(-90, 1.0, 0.0, 0.0);
+   cylinder(0.3, 1.0,1.3,1.3,1.3);
+   
+   glTranslatef(-1.3,0.1,3.0);
+   glRotatef(-50, 1.0, 0.0, 0.0);
+   cylinder(0.4,0.35,0.5,0.4,0.5);   
+
    glFlush();
    glutSwapBuffers();
 }
@@ -355,23 +428,32 @@ void display()
 void special(int key,int x,int y)
 {
    //  Right arrow key - increase angle by 5 degrees
-   if (key == GLUT_KEY_RIGHT)
+   if (key == GLUT_KEY_RIGHT) {
       th += 5;
+      yrot = th;
+   }
+
    //  Left arrow key - decrease angle by 5 degrees
-   else if (key == GLUT_KEY_LEFT)
+   else if (key == GLUT_KEY_LEFT) {
       th -= 5;
+      yrot = th;
+   }
    //  Up arrow key - increase elevation by 5 degrees
-   else if (key == GLUT_KEY_UP)
+   else if (key == GLUT_KEY_UP) {
       ph += 5;
+   }
    //  Down arrow key - decrease elevation by 5 degrees
-   else if (key == GLUT_KEY_DOWN)
+   else if (key == GLUT_KEY_DOWN) {
       ph -= 5;
+   }
    //  PageUp key - increase dim
-   else if (key == GLUT_KEY_PAGE_UP)
+   else if (key == GLUT_KEY_PAGE_UP) {
       dim += 0.1;
+   }
    //  PageDown key - decrease dim
-   else if (key == GLUT_KEY_PAGE_DOWN && dim>1)
+   else if (key == GLUT_KEY_PAGE_DOWN && dim>1) {
       dim -= 0.1;
+   }
    //  Keep angles to +/-360 degrees
    th %= 360;
    ph %= 360;
@@ -389,21 +471,49 @@ void key(unsigned char ch,int x,int y)
    //  Exit on ESC
    if (ch == 27)
       exit(0);
-   //  Reset view angle
-   else if (ch == '0')
+   else if (ch == 'w') {
+      xpos -= Sin(th) * 0.5;
+      zpos -= Cos(th) * 0.5;
+   }
+   else if (ch == 'a') {
+      xpos -= Cos(th) * 0.5;
+      zpos += Sin(th) * 0.5;
+   }
+   else if (ch == 's') {
+      xpos += Sin(th) * 0.5;
+      zpos += Cos(th) * 0.5;
+   }
+   else if (ch == 'd') {
+      xpos += Cos(th) * 0.5;
+      zpos -= Sin(th) * 0.5;
+   }
+   else if (ch == '0') {
       th = ph = 0;
-   //  Toggle axes
-   else if (ch == 'a' || ch == 'A')
+      mode = 0;
+   }
+   else if (ch == '1') {
+      th = ph = 0;
+      mode = 1;
+   }
+   else if (ch == '2') {
+      xpos = 0;
+      zpos = 10;
+      ypos = 1.5;
+      th = ph = yrot = 0;
+      mode = 2;
+   }
+//  Reset view angle
+   else if (ch == '4')
+   th = ph = 0;
+    // Toggle axes
+   else if (ch == 'b' || ch == 'B')
       axes = 1-axes;
-   //  Switch display mode
-   else if (ch == 'm' || ch == 'M')
-      mode = 1-mode;
-   //  Change field of view angle
+      
    else if (ch == '-' && ch>1)
       fov--;
    else if (ch == '+' && ch<179)
       fov++;
-   //  Reproject
+    // Reproject
    Project();
    //  Tell GLUT it is necessary to redisplay the scene
    glutPostRedisplay();
@@ -431,7 +541,7 @@ int main(int argc,char* argv[])
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-   glutInitWindowSize(600,600);
+   glutInitWindowSize(600,700);
    glutCreateWindow("Projections");
    //  Set callbacks
    glutDisplayFunc(display);
