@@ -68,7 +68,7 @@ static void cube(double x,double y,double z,
    glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glColor3f(1,1,1);
-   glBindTexture(GL_TEXTURE_2D,texture[5]);
+   glBindTexture(GL_TEXTURE_2D,texture[4]);
    //  Front
    // glColor3f(1,0,0);
    // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[1]);
@@ -151,7 +151,7 @@ void pyramid(double x,double y,double z,
    glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glColor3f(1,1,1);
-   glBindTexture(GL_TEXTURE_2D,texture[6]);
+   glBindTexture(GL_TEXTURE_2D,texture[5]);
    glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
       // Front
       
@@ -225,22 +225,22 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
     // glRotated(xrot,0,0,0);
     glScaled(s,s,s);
     glBegin(GL_QUAD_STRIP);
-    angle = 0.0;
-        while( angle < 2*PI ) {
+       angle = 0.0;
+       while( angle < PI*2 ) {
             x = radius * cos(angle);
             y = radius * sin(angle);
+            glNormal3f(x,0,y);
             glVertex3f(x, height , y);
             glVertex3f(x, 0.0 , y);
             angle = angle + angle_stepsize;
         }
         glVertex3f(radius, height, 0.0);
         glVertex3f(radius, 0.0, 0.0);
-    glEnd();
-
+    glEnd(); 
     // Top Circle 
     glColor3f(1,1,0.7);
     glBegin(GL_POLYGON);
-    angle = 0.0;
+        angle = 0.0;
         while( angle < 2*PI ) {
             x = radius * cos(angle);
             y = radius * sin(angle);
@@ -249,7 +249,6 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
         }
         glVertex3f(radius, height, 0.0);
     glEnd();
-    // glPopMatrix();
 
     
 }
@@ -278,7 +277,7 @@ void parthenon() {
    cube(0.0,-1.3,0.0,1.2,0.1,0.7,0);
    cube(0.0,-1.4,0.0,1.5,0.1,0.8,0);
    cube(0.0,-1.5,0.0,1.8,0.1,0.9,0);
-   cube(0.0,-1.6,0.0,2.1,0.1,1.0,0);
+   // cube(0.0,-1.6,0.0,2.1,0.1,1.0,0);
 
 
 
@@ -525,11 +524,9 @@ int main(int argc,char* argv[])
    glutIdleFunc(idle);
    //  Load textures
    texture[0] = LoadTexBMP("crate.bmp");
-   // texture[1] = LoadTexBMP("img1.bmp");
-   // texture[2] = LoadTexBMP("img2.bmp");
-   // texture[3] = LoadTexBMP("img3.bmp");
-   // texture[4] = LoadTexBMP("img4.bmp");
-   // texture[5] = LoadTexBMP("img5.bmp");
+   texture[2] = LoadTexBMP("limestone2.bmp");
+   texture[3] = LoadTexBMP("carrara-marble-tiles.bmp");
+   texture[4] = LoadTexBMP("limestone1.bmp");
    texture[5] = LoadTexBMP("02.bmp");
    texture[6] = LoadTexBMP("04.bmp");
    //  Pass control to GLUT so it can interact with the user
