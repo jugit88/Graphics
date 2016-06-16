@@ -68,10 +68,10 @@ static void cube(double x,double y,double z,
    glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glColor3f(1,1,1);
-   glBindTexture(GL_TEXTURE_2D,texture[0]);
+   glBindTexture(GL_TEXTURE_2D,texture[5]);
    //  Front
-   glColor3f(1,0,0);
-   if (ntex) glBindTexture(GL_TEXTURE_2D,texture[1]);
+   // glColor3f(1,0,0);
+   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[1]);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0, 1);
    glTexCoord2f(0,0); glVertex3f(-1,-.5, 1.6);
@@ -80,8 +80,8 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+.5, 1.6);
    glEnd();
    //  Back
-   glColor3f(0,0,1);
-   if (ntex) glBindTexture(GL_TEXTURE_2D,texture[2]);
+   // glColor3f(0,0,1);
+   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[2]);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,-1);
    glTexCoord2f(0,0); glVertex3f(+1,-.5,-1.6);
@@ -90,8 +90,8 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+.5,-1.6);
    glEnd();
    //  Right
-   glColor3f(1,1,0);
-   if (ntex) glBindTexture(GL_TEXTURE_2D,texture[3]);
+   // glColor3f(1,1,0);
+   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[3]);
    glBegin(GL_QUADS);
    glNormal3f(+1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(+1,-.5,+1.6);
@@ -100,8 +100,8 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+.5,+1.6);
    glEnd();
    //  Left
-   glColor3f(0,1,0);
-   if (ntex) glBindTexture(GL_TEXTURE_2D,texture[4]);
+   // glColor3f(0,1,0);
+   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[4]);
    glBegin(GL_QUADS);
    glNormal3f(-1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-.5,-1.6);
@@ -110,8 +110,8 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+.5,-1.6);
    glEnd();
    //  Top
-   glColor3f(0,1,1);
-   if (ntex) glBindTexture(GL_TEXTURE_2D,texture[5]);
+   // glColor3f(0,1,1);
+   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[5]);
    glBegin(GL_QUADS);
    glNormal3f( 0,+1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,+.5,+1.6);
@@ -120,8 +120,8 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+.5,-1.6);
    glEnd();
    //  Bottom
-   glColor3f(1,0,1);
-   if (ntex) glBindTexture(GL_TEXTURE_2D,texture[6]);
+   // glColor3f(1,0,1);
+   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[6]);
    glBegin(GL_QUADS);
    glNormal3f( 0,-1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-.5,-1.6);
@@ -156,39 +156,39 @@ void pyramid(double x,double y,double z,
       // Front
       
       glNormal3f(0,0,1);
-      glColor3f(1.0f, 1.0f, 1.0f);     // Red
+      // glColor3f(1.0f, 1.0f, 1.0f);     // Red
       glTexCoord2f(0,0); glVertex3f( 0.0f, .25f, 0.0f);
       // glColor3f(1.0f, 1.0f, 1.0f);     // Green
       glTexCoord2f(1,0); glVertex3f(-1.0f, -.25f, 1.0f);
       // glColor3f(0.0f, 0.0f, 1.0f);     // Blue
-      glTexCoord2f(1,1); glVertex3f(1.0f, -.25f, 1.0f);
+      glTexCoord2f(0.5,1); glVertex3f(1.0f, -.25f, 1.0f);
  
       // Right
       glNormal3f(1,0,0);
-      glColor3f(1.0f, 1.0f, 1.0f);     // Red
+      // glColor3f(1.0f, 1.0f, 1.0f);     // Red
       glTexCoord2f(0,0); glVertex3f(0.0f, .25f, 0.0f);
       // glColor3f(0.0f, 0.0f, 1.0f);     // Blue
       glTexCoord2f(1,0); glVertex3f(1.0f, -0.25f, 1.0f);
       // glColor3f(0.0f, .25f, 0.0f);     // Green
-      glTexCoord2f(1,1); glVertex3f(1.0f, -.25f, -1.0f);
+      glTexCoord2f(0.5,1); glVertex3f(1.0f, -.25f, -1.0f);
  
       // Back
       glNormal3f(0,0,-1);
-      glColor3f(1.0f, 1.0f, 1.0f);     // Red
+      // glColor3f(1.0f, 1.0f, 1.0f);     // Red
       glTexCoord2f(0,0); glVertex3f(0.0f, .25f, 0.0f);
       // glColor3f(0.0f, .25f, 0.0f);     // Green
       glTexCoord2f(1,0); glVertex3f(1.0f, -.25f, -1.0f);
       // glColor3f(1.0f, 1.0f, 1.0f);     // Blue
-      glTexCoord2f(1,1); glVertex3f(-1.0f, -.25f, -1.0f);
+      glTexCoord2f(0.5,1); glVertex3f(-1.0f, -.25f, -1.0f);
  
       // Left
       glNormal3f(-1,0,0);
-      glColor3f(1.0f,1.0f,1.0f);       // Red
-      glTexCoord2f(1,0); glVertex3f( 0.0f, .25f, 0.0f);
+      // glColor3f(1.0f,1.0f,1.0f);       // Red
+      glTexCoord2f(0,0); glVertex3f( 0.0f, .25f, 0.0f);
       // glColor3f(0.0f,0.0f,1.0f);       // Blue
       glTexCoord2f(1,0); glVertex3f(-1.0f,-.25f,-1.0f);
       // glColor3f(0.0f,.25f,0.0f);       // Green
-      glTexCoord2f(1,0); glVertex3f(-1.0f,-.25f, 1.0f);
+      glTexCoord2f(0.5,1); glVertex3f(-1.0f,-.25f, 1.0f);
    glEnd();   // Done drawing the pyramid
  
    // glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
@@ -253,7 +253,7 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
 
     
 }
-void pantheon() {
+void parthenon() {
    // glRotated(90,0,0,0);
    // front pillars
    for (int i = 0;i < 4;i++) {
@@ -269,11 +269,19 @@ void pantheon() {
       cylinder(0.05,0.5,1,0,0.2);
    }
    glTranslated(-0.2,0,0.2);
+   // back pillars
    for (int i = 0; i < 4;i++) {
       cylinder(0.05,0.5,1,0.2,0);
    }
    glTranslated(0,1.0,0);
    pyramid(-0.3,-0.38,-0.9,0.4,0.5,.95,0);
+   cube(0.0,-1.3,0.0,1.2,0.1,0.7,0);
+   cube(0.0,-1.4,0.0,1.5,0.1,0.8,0);
+   cube(0.0,-1.5,0.0,1.8,0.1,0.9,0);
+   cube(0.0,-1.6,0.0,2.1,0.1,1.0,0);
+
+
+
 
 
 
@@ -359,7 +367,7 @@ void display()
       glDisable(GL_LIGHTING);
    //  Draw scene
    // cube(1,-0.5,2.0 , 0.5,0.5,0.5 , 0);
-   pantheon();
+   parthenon();
 
    
   
@@ -517,12 +525,13 @@ int main(int argc,char* argv[])
    glutIdleFunc(idle);
    //  Load textures
    texture[0] = LoadTexBMP("crate.bmp");
-   texture[1] = LoadTexBMP("img1.bmp");
-   texture[2] = LoadTexBMP("img2.bmp");
-   texture[3] = LoadTexBMP("img3.bmp");
-   texture[4] = LoadTexBMP("img4.bmp");
-   texture[5] = LoadTexBMP("img5.bmp");
-   texture[6] = LoadTexBMP("02.bmp");
+   // texture[1] = LoadTexBMP("img1.bmp");
+   // texture[2] = LoadTexBMP("img2.bmp");
+   // texture[3] = LoadTexBMP("img3.bmp");
+   // texture[4] = LoadTexBMP("img4.bmp");
+   // texture[5] = LoadTexBMP("img5.bmp");
+   texture[5] = LoadTexBMP("02.bmp");
+   texture[6] = LoadTexBMP("04.bmp");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();
