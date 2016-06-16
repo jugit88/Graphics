@@ -190,8 +190,8 @@ void pyramid(double x,double y,double z,
       // glColor3f(0.0f,.25f,0.0f);       // Green
       glTexCoord2f(0.5,1); glVertex3f(-1.0f,-.25f, 1.0f);
    glEnd();   // Done drawing the pyramid
+   glDisable(GL_TEXTURE_2D);
  
-   // glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
 }
 /*
  *  Draw a ball
@@ -214,6 +214,11 @@ static void ball(double x,double y,double z,double r)
 // draw cylinders
 void cylinder(double radius,double height, double s,double xtrans,double ztrans)
 {
+    float white[] = {1,1,1,1};
+    float Emission[]  = {0.0,0.0,0.01*emission,1.0};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
     double x              = 0.0;
     double y              = 0.0;
     double angle          = 0.0;
@@ -224,18 +229,22 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
     glTranslated(xtrans,0,ztrans);
     // glRotated(xrot,0,0,0);
     glScaled(s,s,s);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
+    glColor3f(1,1,1);
+    glBindTexture(GL_TEXTURE_2D,texture[5]);
     glBegin(GL_QUAD_STRIP);
        angle = 0.0;
        while( angle < PI*2 ) {
             x = radius * cos(angle);
             y = radius * sin(angle);
             glNormal3f(x,0,y);
-            glVertex3f(x, height , y);
-            glVertex3f(x, 0.0 , y);
+            glTexCoord2f(x,height); glVertex3f(x, height , y);
+            glTexCoord2f(x,0); glVertex3f(x, 0.0 , y);
             angle = angle + angle_stepsize;
         }
-        glVertex3f(radius, height, 0.0);
-        glVertex3f(radius, 0.0, 0.0);
+        glTexCoord2f(0,1); glVertex3f(radius, height, 0.0);
+        glTexCoord2f(1,0); glVertex3f(radius, 0.0, 0.0);
     glEnd(); 
     // Top Circle 
     glColor3f(1,1,0.7);
@@ -244,11 +253,13 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
         while( angle < 2*PI ) {
             x = radius * cos(angle);
             y = radius * sin(angle);
+            glNormal3f(x,0,y);
             glVertex3f(x, height, y);
             angle = angle + angle_stepsize;
         }
         glVertex3f(radius, height, 0.0);
     glEnd();
+    glDisable(GL_TEXTURE_2D);
 
     
 }
@@ -256,21 +267,21 @@ void parthenon() {
    // glRotated(90,0,0,0);
    // front pillars
    for (int i = 0;i < 4;i++) {
-      cylinder(0.05,0.5,1,0.2,0);
+      cylinder(0.05,0.495,1,0.2,0);
    }
    // side pillars
    for (int i = 0; i < 8;i++) {
-      cylinder(0.05,0.5,1,0,0.2);
+      cylinder(0.05,0.495,1,0,0.2);
    }
    glTranslated(-0.6,0,-1.6);
    
    for (int i = 0; i < 8;i++) {
-      cylinder(0.05,0.5,1,0,0.2);
+      cylinder(0.05,0.495,1,0,0.2);
    }
    glTranslated(-0.2,0,0.2);
    // back pillars
    for (int i = 0; i < 4;i++) {
-      cylinder(0.05,0.5,1,0.2,0);
+      cylinder(0.05,0.495,1,0.2,0);
    }
    glTranslated(0,1.0,0);
    pyramid(-0.3,-0.38,-0.9,0.4,0.5,.95,0);
