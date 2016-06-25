@@ -295,12 +295,16 @@ void bridge() {
       glScaled(0.1,0.1,hyp);
       cylinder(0.3,1,1,0,0);
       glPopMatrix();
-      // left middle back
+     
+   }
+   // left middle back
+   for (i = 1; i < 2950;i++) {
       glPushMatrix();
+      
       float x2 = n_array[i][0]; float y2 = n_array[i][1];
-      float theta1 = (n_array[i][1]- n_array[i-1][1]) / (n_array[i][0]- n_array[i-1][0]);
-      float a1 = atan(theta1);
-      float result1 = a1 * 180.0/PI;
+      float theta = (n_array[i][1]- n_array[i-1][1]) / (n_array[i][0]- n_array[i-1][0]);
+      float a = atan(theta);
+      float result = a * 180.0/PI;
       glTranslated(n_array[i][0],n_array[i][1],0.02);
       if (i*70 < 2950) {
           glBegin(GL_LINE_STRIP);            
@@ -309,39 +313,15 @@ void bridge() {
           glEnd();
          
       }
-      glRotated(result1,0,0,1);
+      glRotated(result,0,0,1);
       glRotated(-90,0,1,0);
-      float hyp1 = sqrt(pow(n_array[i-1][0] - x2,2) + pow(n_array[i-1][1] - y2,2));
-      glScaled(0.1,0.1,hyp1);
+      float hyp = sqrt(pow(n_array[i-1][0] - x2,2) + pow(n_array[i-1][1] - y2,2));
+      glScaled(0.1,0.1,hyp);
       cylinder(0.3,1,1,0,0);
       glPopMatrix();
-     
-   }
-   // left middle back
-   // for (i = 1; i < 2950;i++) {
-   //    glPushMatrix();
-      
-   //    float x2 = n_array[i][0]; float y2 = n_array[i][1];
-   //    float theta = (n_array[i][1]- n_array[i-1][1]) / (n_array[i][0]- n_array[i-1][0]);
-   //    float a = atan(theta);
-   //    float result = a * 180.0/PI;
-   //    glTranslated(n_array[i][0],n_array[i][1],0.02);
-   //    if (i*70 < 2950) {
-   //        glBegin(GL_LINE_STRIP);            
-   //          glVertex3f(n_array[i*70][0],n_array[i*70][1],0);
-   //          glVertex3f(n_array[i*70][0],-0.2,0);
-   //        glEnd();
-         
-   //    }
-   //    glRotated(result,0,0,1);
-   //    glRotated(-90,0,1,0);
-   //    float hyp = sqrt(pow(n_array[i-1][0] - x2,2) + pow(n_array[i-1][1] - y2,2));
-   //    glScaled(0.1,0.1,hyp);
-   //    cylinder(0.3,1,1,0,0);
-   //    glPopMatrix();
       
 
-   // }
+   }
    // right middle front 
    for (i = 1; i < 2950;i++) {
       glPushMatrix();
@@ -364,12 +344,16 @@ void bridge() {
       cylinder(0.3,1,1,0,0);
 
       glPopMatrix();
-      // left middle front
-      glPushMatrix();  
+     
+   }
+   // left middle front
+   for (i = 1; i < 2950;i++) {
+      glPushMatrix();
+      
       float x2 = n_array[i][0]; float y2 = n_array[i][1];
-      float theta1 = (n_array[i][1]- n_array[i-1][1]) / (n_array[i][0]- n_array[i-1][0]);
-      float a1 = atan(theta1);
-      float result1 = a1 * 180.0/PI;
+      float theta = (n_array[i][1]- n_array[i-1][1]) / (n_array[i][0]- n_array[i-1][0]);
+      float a = atan(theta);
+      float result = a * 180.0/PI;
       glTranslated(n_array[i][0],n_array[i][1],0.48);
       if (i*70 < 2950) {
           glBegin(GL_LINE_STRIP);            
@@ -378,41 +362,16 @@ void bridge() {
           glEnd();
          
       }
-      glRotated(result1,0,0,1);
+      glRotated(result,0,0,1);
       glRotated(-90,0,1,0);
-      float hyp1 = sqrt(pow(n_array[i-1][0] - x2,2) + pow(n_array[i-1][1] - y2,2));
+      float hyp = sqrt(pow(n_array[i-1][0] - x2,2) + pow(n_array[i-1][1] - y2,2));
       
-      glScaled(0.1,0.1,hyp1);
+      glScaled(0.1,0.1,hyp);
       cylinder(0.3,1,1,0,0);
+     
+      
       glPopMatrix();
-     
    }
-   // left middle front
-   // for (i = 1; i < 2950;i++) {
-   //    glPushMatrix();
-      
-   //    float x2 = n_array[i][0]; float y2 = n_array[i][1];
-   //    float theta = (n_array[i][1]- n_array[i-1][1]) / (n_array[i][0]- n_array[i-1][0]);
-   //    float a = atan(theta);
-   //    float result = a * 180.0/PI;
-   //    glTranslated(n_array[i][0],n_array[i][1],0.48);
-   //    if (i*70 < 2950) {
-   //        glBegin(GL_LINE_STRIP);            
-   //          glVertex3f(n_array[i*70][0],n_array[i*70][1],0);
-   //          glVertex3f(n_array[i*70][0],-0.2,0);
-   //        glEnd();
-         
-   //    }
-   //    glRotated(result,0,0,1);
-   //    glRotated(-90,0,1,0);
-   //    float hyp = sqrt(pow(n_array[i-1][0] - x2,2) + pow(n_array[i-1][1] - y2,2));
-      
-   //    glScaled(0.1,0.1,hyp);
-   //    cylinder(0.3,1,1,0,0);
-     
-      
-   //    glPopMatrix();
-   // }
    // right front 
    for (i = 1; i < 2950;i++) {
       glPushMatrix();
