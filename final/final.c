@@ -32,8 +32,8 @@ int move=1;       //  Move light
 int roll=1;       //  Rolling brick texture
 int proj=1;       //  Projection type
 int obj=1;        //  Object
-int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
+int th=-65;         //  Azimuth of view angle
+int ph=15;         //  Elevation of view angle
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 double dim=3.0;   //  Size of world
@@ -222,15 +222,41 @@ void bridge() {
    Cube(1.5,0,0,0.05,1.5,0.05,0);
    Cube(1.5,0,0.5,0.05,1.5,0.05,0);
    // support on poles
+   // left
    Cube(-1.5,0.2,0.25,0.02,0.06,0.2,0);
    Cube(-1.5,0.6,0.25,0.02,0.06,0.2,0);
    Cube(-1.5,1.0,0.25,0.02,0.06,0.2,0);
    Cube(-1.5,1.41,0.25,0.02,0.06,0.2,0);
+   // right
+   Cube(1.5,0.2,0.25,0.02,0.06,0.2,0);
+   Cube(1.5,0.6,0.25,0.02,0.06,0.2,0);
+   Cube(1.5,1.0,0.25,0.02,0.06,0.2,0);
+   Cube(1.5,1.41,0.25,0.02,0.06,0.2,0);
+
    // road 
    Cube(0,-0.2,0.25,3.5,0.06,0.2,0);
+   // rail spokes
+   double x1 = -3.5;
+   for (int i = 0; i <350;i++) {
+      glPushMatrix();
+      x1 += .02;  
+      glTranslated(x1,0,0);
+      glColor3f(0,0,1);
+      Cube(0,-0.1,0.44,.001,0.04,0.003,0);
+      Cube(0,-0.1,0.06,.001,0.04,0.003,0);
+      glPopMatrix();
+   }
+   // top rails
+   Cube(0,-0.06,0.44,3.5,0.002,0.004,0);
+   Cube(0,-0.06,0.06,3.5,0.002,0.004,0);
+
+
+
+
+
    glPushMatrix();
    glTranslated(-1.5,-0.5,0.25);
-   Cube(0,0,0,0.02,0.06,0.2,50);
+   Cube(0,0,0,0.02,0.06,0.2,60);
 
    glPopMatrix();
 
