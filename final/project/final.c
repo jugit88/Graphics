@@ -45,7 +45,7 @@ int specular  =   0;  // Specular intensity (%)
 int shininess =   0;  // Shininess (power of two)
 float shinyvec[1];    // Shininess (value)
 int zh        =  90;  // Light azimuth
-float ylight  =   0;  // Elevation of light
+float ylight  =   2;  // Elevation of light
 unsigned int texture[7]; // Texture names
 #define PI 3.1415927
 int gp;                      // G Pressed? ( New )
@@ -367,6 +367,42 @@ void bridge() {
       reflect = 1 - reflect;
       glPopMatrix();
    }
+   for (float i = 0.0;i<7;i+=0.18) {
+      glPushMatrix();
+      glTranslated(-3.5+i,-0.4,0.14);
+      glRotated(90,1,0,0);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      glTranslated(.18,0,0);
+      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      glTranslated(-0.09,-0.08,0);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      glTranslated(0,0.08,0);  
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      reflect = 1 - reflect;
+      glPopMatrix();
+   }
+   for (float i = 0.0;i<7;i+=0.18) {
+      glPushMatrix();
+      glTranslated(-3.5+i,-0.4,0.36);
+      glRotated(-90,1,0,0);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      glTranslated(.18,0,0);
+      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      glTranslated(-0.09,-0.08,0);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      glTranslated(0,0.08,0);
+      glRotated(180,0,1,0);  
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      reflect = 1 - reflect;
+      glPopMatrix();
+   }
+   glPushMatrix();
+   glColor3f(1,0.6,0);
+   glTranslated(0,-0.40,0.25);
+   Cube(0,0,0,3.5,0.01,0.04,0,3);
+   glPopMatrix();
+
+
 
    // glPopMatrix();
 
