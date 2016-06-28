@@ -8,6 +8,11 @@
  *  Key bindings:
  *  l          Toggle lighting on/off
  *  t          Change textures
+ *  f/F        Toggle Fog
+ *  r          Toggle between moving and non moving cars
+ *  1          Enter first person mode
+ *  2          Enter perspective mode(default)
+ *  v/c/b/z    Zoom in/out/left/right in FP mode
  *  m          Toggles texture mode modulate/replace
  *  a/A        decrease/increase ambient light
  *  d/D        decrease/increase diffuse light
@@ -23,6 +28,7 @@
  */
 #include "CSCIx229.h"
 int mode=0;       //  View mode
+int race = 1;
 int ntex=0;       //  Cube faces
 int axes=0;       //  Display axes
 int th=15;         //  Azimuth of view angle
@@ -48,7 +54,7 @@ GLuint fogMode[]= { GL_EXP, GL_EXP2, GL_LINEAR };   // Storage For Three Types O
 GLuint fogfilter= 0;                    // Which Fog To Use
 GLfloat fogColor[4]= {0.5f, 0.5f, 0.5f, 1.0f}; 
 int fog = 0;
-float x = 0;float y = 0;float xp = 0; float yp = 0;
+float x = 0;float y = 0;float xp = 0; float yp = 0;float xcar = 0;float t1 = 0;
 float xpos = 0.0;
 float ypos = 1.0;
 float zpos = 10.0;
@@ -244,7 +250,7 @@ void bridge() {
    Cube(1.5,0,0.02,0.05,1.5,0.05,0,3);
    Cube(1.5,0,0.48,0.05,1.5,0.05,0,3);
    glPopMatrix();
-   // support on poles
+   // support
    // left
    glPushMatrix();
    Cube(-1.5,0.2,0.25,0.02,0.06,0.2,0,3);
@@ -259,6 +265,70 @@ void bridge() {
    Cube(1.5,1.0,0.25,0.02,0.06,0.2,0,3);
    Cube(1.5,1.41,0.25,0.02,0.06,0.2,0,3);
    glPopMatrix();
+   // cross bars
+   // left
+   glPushMatrix();
+   Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
+   Cube(-1.5,-0.50,0.25,0.03,0.02,0.2,0,3);
+   Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
+   Cube(-1.5,-1.1,0.25,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+   
+   glPushMatrix();
+   glTranslated(-1.5,-0.65,0.25);
+   glRotated(45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+   
+   glPushMatrix();
+   glTranslated(-1.5,-0.95,0.25);
+   glRotated(45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+   
+   glPushMatrix();
+   glTranslated(-1.5,-0.65,0.25);
+   glRotated(-45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslated(-1.5,-0.95,0.25);
+   glRotated(-45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+   // right pole
+   glPushMatrix();
+   Cube(1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
+   Cube(1.5,-0.50,0.25,0.03,0.02,0.2,0,3);
+   Cube(1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
+   Cube(1.5,-1.1,0.25,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+   
+   glPushMatrix();
+   glTranslated(1.5,-0.65,0.25);
+   glRotated(45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslated(1.5,-0.95,0.25);
+   glRotated(45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslated(1.5,-0.65,0.25);
+   glRotated(-45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslated(1.5,-0.95,0.25);
+   glRotated(-45,1,0,0);
+   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   glPopMatrix();
+
 
    // road 
    Cube(0,-0.2,0.25,3.5,0.03,0.2,0,0);
@@ -279,12 +349,7 @@ void bridge() {
    Cube(0,-0.11,0.06,3.5,0.002,0.004,0,3);
 
 
-   // bottom cross bars
-   glPushMatrix();
-   // glRotated(60,0,0,1);
-   // glScaled(0.05,0.5,0.1);
-   Cube(0.5,0,0.6,0.05,0.3,0.05,-60,3);
-   glPopMatrix();
+   
 
    int i;
    // suspension cables
@@ -507,16 +572,16 @@ void water() {
    glBlendFunc(GL_ONE,GL_ONE);
    glBindTexture(GL_TEXTURE_2D,texture[2]);
    glTranslated(0,-1.5,0);
-   glScaled(4,1,4);
+   glScaled(5,5,5);
    glBegin(GL_QUADS);
-    
+    // TODO:fix moving water 
    double time = 0.00001 * glutGet(GLUT_ELAPSED_TIME);
    double time1 = 0;
    glNormal3f(0,+1,0);
-   glTexCoord2f(0,0);glVertex3f(-1,0,+1);
-   glTexCoord2f(1,0);  glVertex3f(+1,0,+1);
-   glTexCoord2f(1,1);  glVertex3f(+1,0,-1);
-   glTexCoord2f(0,1);  glVertex3f(-1,0,-1);
+   glTexCoord2f(-1,1);glVertex3f(-1,0,+1);
+   glTexCoord2f(1,1);glVertex3f(+1,0,+1);
+   glTexCoord3f(time,1,-1);glVertex3f(+1,0,-1);
+   glTexCoord3f(time,-1,-1);glVertex3f(-1,0,-1);
    
    glEnd();
    glPopMatrix();
@@ -534,7 +599,8 @@ void car(float r,int texnum) {
    glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glBindTexture(GL_TEXTURE_2D,texture[texnum]);
-   glTranslated(0,0.3,1);
+   // move car on road
+   glTranslated(-3,-0.15,0.3);
    glScaled(r,r,r);
    glBegin(GL_POLYGON);
       // side +z
@@ -675,7 +741,6 @@ void display()
    glEnable(GL_DEPTH_TEST);
    //  Set perspective
    glLoadIdentity();
-   // gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
    double Ex = 0; double Ey = 0; double Ez = 0;
    if (mode) {
       float xtrans = -xpos;
@@ -686,12 +751,13 @@ void display()
       glRotatef(ph,1,0,0);
       glRotatef(sceneroty,0,1,0);
       glTranslatef(xtrans,ytrans,ztrans);
+      // gluLookAt(0,0,0,xcar,0,0, 0,Cos(ph),0);
    } 
    else {
       Ex = -2*dim*Sin(th)*Cos(ph);
       Ey = +2*dim        *Sin(ph);
       Ez = +2*dim*Cos(th)*Cos(ph);
-      gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
+      gluLookAt(Ex,Ey,Ez,0,0,0, 0,Cos(ph),0);
 
    }
    //  Light switch
@@ -703,8 +769,11 @@ void display()
       glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
       glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
       glFogf(GL_FOG_END, 5.0f);               // Fog End Depth
-      glEnable(GL_FOG); 
-   }   
+      glEnable(GL_FOG);
+
+   }
+   else    
+      glDisable(GL_FOG); 
    if (light)
    {
       //  Translate intensity to color vectors
@@ -737,20 +806,43 @@ void display()
    //  Draw scene
    bridge();
    water();
-   car(0.75,5);
-  
-
+   glPushMatrix();
    
-  
+   if (race) {   
+      float t2 = glutGet(GLUT_ELAPSED_TIME) * 0.001;
+      float dt = fabsf(t2-t1);
+      float speed = 1.5;
+      if (xcar > 4.5) {
+         xcar = 0;t2 = 0;
+      }
+      else { 
+        xcar += dt * speed;
+        t1 = t2;
+        glPushMatrix();
+        glTranslated(xcar,0,0);
+        car(0.75,4);
+        // gluLookAt(xcar,,Ez , xcar,0,0 , 0,Cos(ph),0);
+        glPopMatrix();
+        glPushMatrix();
+        glTranslated(5.3,0.0,-0.2);
+        glTranslated(-xcar,0,0);
+        car(0.75,4);
+        glPopMatrix();
 
-
-
-
+      }
+   }
+   else {
+      car(0.75,5);
+      
+      glTranslated(5.7,0.0,-0.2);
+      car(0.75,5);
+   }
+      glPopMatrix();
+      
+      //  Draw axes - no lighting from here on
+      glDisable(GL_LIGHTING);
+      glColor3f(1,1,1);
    
-   
-   //  Draw axes - no lighting from here on
-   glDisable(GL_LIGHTING);
-   glColor3f(1,1,1);
   
 }
 
@@ -887,6 +979,13 @@ void key(unsigned char ch,int x,int y)
       th = ph = 0;
       mode = 0;
    }
+   else if (ch == 'f' || ch == 'F') {
+      fog = 1-fog;
+   }
+   else if (ch == 'r' || ch == 'R') {
+      race = 1-race;
+   }
+   
 
 
 
