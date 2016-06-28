@@ -25,8 +25,8 @@
 int mode=0;       //  View mode
 int ntex=0;       //  Cube faces
 int axes=0;       //  Display axes
-int th=-45;         //  Azimuth of view angle
-int ph=15;         //  Elevation of view angle
+int th=15;         //  Azimuth of view angle
+int ph=0;         //  Elevation of view angle
 int light=1;      //  Lighting
 int rep=1;        //  Repitition
 double asp=1;     //  Aspect ratio
@@ -524,7 +524,7 @@ void water() {
    glDisable(GL_BLEND);
 
 } 
-void car(float r) {
+void car(float r,int texnum) {
    float white[] = {1,1,1,1};
    float Emission[]  = {0.0,0.0,0.01*emission,1.0};
    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
@@ -533,8 +533,7 @@ void car(float r) {
    glPushMatrix();
    glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
-   glBindTexture(GL_TEXTURE_2D,texture[5]);
-   // glTranslated(3.4,-0.1,0.25);
+   glBindTexture(GL_TEXTURE_2D,texture[texnum]);
    glTranslated(0,0.3,1);
    glScaled(r,r,r);
    glBegin(GL_POLYGON);
@@ -585,6 +584,7 @@ void car(float r) {
       glTexCoord2f(1,1); glVertex3f(-0.25,0.05,0.15);
       glTexCoord2f(0,1); glVertex3f(-0.25,0.05,0.0);
    glEnd();
+   // roof
    glBegin(GL_QUAD_STRIP);
       glNormal3f(0,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.2,0.1,0.15);
@@ -592,6 +592,7 @@ void car(float r) {
       glTexCoord2f(1,1); glVertex3f(-0.15,0.1,0.15);
       glTexCoord2f(1,1); glVertex3f(-0.15,0.1,0.0);
    glEnd();
+   // back hatch
    glBegin(GL_QUAD_STRIP);
       glNormal3f(1,0.7,0);
       glTexCoord2f(0,0); glVertex3f(-0.15,0.1,0.15);
@@ -599,6 +600,7 @@ void car(float r) {
       glTexCoord2f(1,1); glVertex3f(-0.1,0.05,0.15);
       glTexCoord2f(0,1); glVertex3f(-0.1,0.05,0.0);
    glEnd();
+   // trunk
    glBegin(GL_QUAD_STRIP);
       glNormal3f(0,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.1,0.05,0.15);
@@ -606,22 +608,21 @@ void car(float r) {
       glTexCoord2f(1,1); glVertex3f(-0.05,0.05,0.15);
       glTexCoord2f(0,1); glVertex3f(-0.05,0.05,0.0);
    glEnd();
+   // back bumper
    glBegin(GL_QUAD_STRIP);
       glNormal3f(1,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.05,0.05,0.15);
       glTexCoord2f(1,0); glVertex3f(-0.05,0.05,0.0);
       glTexCoord2f(1,1); glVertex3f(-0.025,0,0.15);
-      glTexCoord2f(0,1); glVertex3f(-0.025,0,0.0);
-
-
-      
+      glTexCoord2f(0,1); glVertex3f(-0.025,0,0.0); 
    glEnd();
-
-
-
-
+   // wheels
+   cylinder(0.025,0.001,1,-0.08,0.02,5);
+   cylinder(0.025,0.001,1,0,0.13,5);
+   cylinder(0.025,0.001,1,-0.18,0.0,5);
+   cylinder(0.025,0.001,1,0,-0.13,5);
+   
    glPopMatrix();
-
    glDisable(GL_TEXTURE_2D);
 
 
@@ -736,7 +737,7 @@ void display()
    //  Draw scene
    bridge();
    water();
-   car(1);
+   car(0.75,5);
   
 
    
