@@ -10,7 +10,7 @@
  *  t          Change textures
  *  f/F        Toggle Fog
  *  r          Toggle between moving and non moving cars
- *  1          Enter first person mode
+ *  1          Enter first person 'car' mode
  *  2          Enter perspective mode(default)
  *  v/c/b/z    Zoom in/out/left/right in FP mode
  *  m          Toggles texture mode modulate/replace
@@ -335,7 +335,10 @@ void bridge() {
    // end cross bars
 
    // road 
-   Cube(0,-0.2,0.25,3.5,0.03,0.2,0,0);
+   glPushMatrix();
+   glRotated(90,0,1,0);
+   Cube(-0.25,-0.2,0.0,0.2,0.03,3.5,0,0);
+   glPopMatrix();
 
    // road support
    
@@ -654,10 +657,10 @@ void water() {
    double time = 0.00001 * glutGet(GLUT_ELAPSED_TIME);
    double time1 = 0;
    glNormal3f(0,+1,0);
-   glTexCoord2f(-1,1);glVertex3f(-1,0,+1);
-   glTexCoord2f(1,1);glVertex3f(+1,0,+1);
-   glTexCoord3f(time,1,-1);glVertex3f(+1,0,-1);
-   glTexCoord3f(time,-1,-1);glVertex3f(-1,0,-1);
+   glTexCoord2f(0,time);glVertex3f(-1,0,+1);
+   glTexCoord2f(1,time);glVertex3f(+1,0,+1);
+   glTexCoord2f(1,time+1);glVertex3f(+1,0,-1);
+   glTexCoord2f(0,time+1);glVertex3f(-1,0,-1);
    
    glEnd();
    glPopMatrix();
@@ -672,13 +675,16 @@ void car(float r,int texnum) {
    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
    glPushMatrix();
-   glEnable(GL_TEXTURE_2D);
+   // glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
-   glBindTexture(GL_TEXTURE_2D,texture[texnum]);
+   // glBindTexture(GL_TEXTURE_2D,texture[texnum]);
    // move car on road
-   glTranslated(-3,-0.15,0.3);
+   glTranslated(0,-0.15,0.3);
    glScaled(r,r,r);
+   glColor3f(0,1,0);
    glBegin(GL_POLYGON);
+   
+      
       // side +z
       glNormal3f(0,0,1);
       glTexCoord2f(0,0); glVertex3f(-0.3,0,0.15);
@@ -691,6 +697,7 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.025,0,0.15);
    glEnd();
       // size -z
+
    glBegin(GL_POLYGON);
       glNormal3f(0,0,-1);
       glTexCoord2f(0,0); glVertex3f(-0.3,0,0.0);
@@ -703,6 +710,7 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.025,0,0);
    glEnd();
    // windshield
+   glColor3f(1,1,1);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(-1,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.25,0.05,0.15);
@@ -710,6 +718,7 @@ void car(float r,int texnum) {
       glTexCoord2f(1,1); glVertex3f(-0.25,0.05,0.0);
       glTexCoord2f(0,1); glVertex3f(-0.2,0.1,0.0); 
    glEnd();
+   
    // bumper
    glBegin(GL_QUAD_STRIP);
       glNormal3f(-1,0,0);
@@ -817,17 +826,23 @@ void display()
    glEnable(GL_DEPTH_TEST);
    //  Set perspective
    glLoadIdentity();
-   double Ex = 0; double Ey = 0; double Ez = 0;
+   double Ex = 0; double Ey = 0; double Ez = 0;double Cx = 0; double Cy = 0; double Cz = 0;
    if (mode) {
-      float xtrans = -xpos;
-      float ztrans = -zpos;
-      float ytrans = -ypos;
-      float sceneroty = 360.0f - yrot;
+      // float xtrans = -xpos;
+      // float ztrans = -zpos;
+      // float ytrans = -ypos;
+      // float sceneroty = 360.0f - yrot;
 
-      glRotatef(ph,1,0,0);
-      glRotatef(sceneroty,0,1,0);
-      glTranslatef(xtrans,ytrans,ztrans);
-      // gluLookAt(0,0,0,xcar,0,0, 0,Cos(ph),0);
+      // glRotatef(ph,1,0,0);
+      // glRotatef(sceneroty,0,1,0);
+      // glTranslatef(xtrans,ytrans,ztrans);
+      Ex = xcar;
+      Ey = -0.05;
+      Ez = 0.3;
+      Cx = Ex + Sin(th) * Cos(ph);
+      Cy = Ey - Sin(ph);
+      Cz = Ez - Cos(th) * Cos(ph);
+      gluLookAt(Ex,Ey,Ez,Cx,Cy,Cz,0,Cos(ph),0); 
    } 
    else {
       Ex = -2*dim*Sin(th)*Cos(ph);
@@ -846,10 +861,11 @@ void display()
       glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
       glFogf(GL_FOG_END, 5.0f);               // Fog End Depth
       glEnable(GL_FOG);
-
    }
-   else    
-      glDisable(GL_FOG); 
+   else {   
+      glDisable(GL_FOG);
+      glClearColor(0,0,0,1); 
+   }
    if (light)
    {
       //  Translate intensity to color vectors
@@ -887,9 +903,9 @@ void display()
    if (race) {   
       float t2 = glutGet(GLUT_ELAPSED_TIME) * 0.001;
       float dt = fabsf(t2-t1);
-      float speed = 1.5;
-      if (xcar > 4.5) {
-         xcar = 0;t2 = 0;
+      float speed = 0.5;
+      if (xcar > 3) {
+         xcar = -3;
       }
       else { 
         xcar += dt * speed;
@@ -900,8 +916,8 @@ void display()
         // gluLookAt(xcar,,Ez , xcar,0,0 , 0,Cos(ph),0);
         glPopMatrix();
         glPushMatrix();
-        glTranslated(5.3,0.0,-0.2);
-        glTranslated(-xcar,0,0);
+        // glTranslated(0,0.0,-0.2);
+        glTranslated(-xcar,0,-0.2);
         car(0.75,4);
         glPopMatrix();
 
@@ -1045,15 +1061,16 @@ void key(unsigned char ch,int x,int y)
       zpos -= Sin(th) * 0.5;
    }
    else if (ch == '1') {
-      xpos = 0;
-      zpos = 10;
-      ypos = 1.5;
-      th = ph = yrot = 0;
+      // xpos = 0;
+      // zpos = 10;
+      // ypos = 1.5;
+      // th = ph = yrot = 0;
+      th = 90;
       mode = 1;
    }
    else if (ch == '2') {
       th = ph = 0;
-      mode = 0;
+      mode = 1;
    }
    else if (ch == 'f' || ch == 'F') {
       fog = 1-fog;
