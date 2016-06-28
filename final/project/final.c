@@ -268,6 +268,8 @@ void bridge() {
    // cross bars
    // left
    glPushMatrix();
+   glTranslated(0,0.1,0);
+   glPushMatrix();
    Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
    Cube(-1.5,-0.50,0.25,0.03,0.02,0.2,0,3);
    Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
@@ -329,9 +331,47 @@ void bridge() {
    Cube(0,0,0,0.03,0.02,0.2,0,3);
    glPopMatrix();
 
+   glPopMatrix();
+   // end cross bars
 
    // road 
    Cube(0,-0.2,0.25,3.5,0.03,0.2,0,0);
+
+   // road support
+   
+   // glPushMatrix();
+   int reflect = 0;
+   for (float i = 0.0;i<7;i+=0.18) {
+      glPushMatrix();
+      glTranslated(-3.5+i,-0.3,0.44);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      glTranslated(.18,0,0);
+      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      glTranslated(-0.09,-0.08,0);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      glTranslated(0,0.08,0);  
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      reflect = 1 - reflect;
+      glPopMatrix();
+   }
+   for (float i = 0.0;i<7;i+=0.18) {
+      glPushMatrix();
+      glTranslated(-3.5+i,-0.3,0.06);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      glTranslated(.18,0,0);
+      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      glTranslated(-0.09,-0.08,0);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      glTranslated(0,0.08,0);  
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      reflect = 1 - reflect;
+      glPopMatrix();
+   }
+
+   // glPopMatrix();
+
+
+
 
    // rail spokes
    double x1 = -3.5;
