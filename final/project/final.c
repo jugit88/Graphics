@@ -91,7 +91,7 @@ void cables1(float arr[][3]) {
 
 static void Cube(double x,double y,double z,
                  double dx,double dy,double dz,
-                 double th,int texnum)
+                 double th,int texnum,float texscale)
 {
    float white[] = {1,1,1,1};
    float Emission[]  = {0.0,0.0,0.01*emission,1.0};
@@ -107,6 +107,7 @@ static void Cube(double x,double y,double z,
 
    glEnable(GL_TEXTURE_2D);
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
+
    // glColor3f(1,1,1);
    glBindTexture(GL_TEXTURE_2D,texture[texnum]);
    
@@ -118,54 +119,54 @@ static void Cube(double x,double y,double z,
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,+1);
    glTexCoord2f(0,0); glVertex3f(-1,-1,+1);
-   glTexCoord2f(1,0); glVertex3f(+1,-1,+1);
-   glTexCoord2f(1,1); glVertex3f(+1,+1,+1);
-   glTexCoord2f(0,1); glVertex3f(-1,+1,+1);
+   glTexCoord2f(1*texscale,0); glVertex3f(+1,-1,+1);
+   glTexCoord2f(1*texscale,1*texscale); glVertex3f(+1,+1,+1);
+   glTexCoord2f(0,1*texscale); glVertex3f(-1,+1,+1);
    glEnd();
    //  Back
    // glColor3f(0,0,1);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,-1);
    glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
-   glTexCoord2f(1,0); glVertex3f(-1,-1,-1);
-   glTexCoord2f(1,1); glVertex3f(-1,+1,-1);
-   glTexCoord2f(0,1); glVertex3f(+1,+1,-1);
+   glTexCoord2f(1*texscale,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1*texscale,1*texscale); glVertex3f(-1,+1,-1);
+   glTexCoord2f(0,1*texscale); glVertex3f(+1,+1,-1);
    glEnd();
    //  Right
    // glColor3f(1,1,0);
    glBegin(GL_QUADS);
    glNormal3f(+1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
-   glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
-   glTexCoord2f(1,1); glVertex3f(+1,+1,-1);
-   glTexCoord2f(0,1); glVertex3f(+1,+1,+1);
+   glTexCoord2f(1*texscale,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1*texscale,1*texscale); glVertex3f(+1,+1,-1);
+   glTexCoord2f(0,1*texscale); glVertex3f(+1,+1,+1);
    glEnd();
    //  Left
    // glColor3f(0,1,0);
    glBegin(GL_QUADS);
    glNormal3f(-1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
-   glTexCoord2f(1,0); glVertex3f(-1,-1,+1);
-   glTexCoord2f(1,1); glVertex3f(-1,+1,+1);
-   glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
+   glTexCoord2f(1*texscale,0); glVertex3f(-1,-1,+1);
+   glTexCoord2f(1*texscale,1*texscale); glVertex3f(-1,+1,+1);
+   glTexCoord2f(0,1*texscale); glVertex3f(-1,+1,-1);
    glEnd();
    //  Top
    // glColor3f(0,1,1);
    glBegin(GL_QUADS);
    glNormal3f( 0,+1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,+1,+1);
-   glTexCoord2f(1,0); glVertex3f(+1,+1,+1);
-   glTexCoord2f(1,1); glVertex3f(+1,+1,-1);
-   glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
+   glTexCoord2f(1*texscale,0); glVertex3f(+1,+1,+1);
+   glTexCoord2f(1*texscale,1*texscale); glVertex3f(+1,+1,-1);
+   glTexCoord2f(0,1*texscale); glVertex3f(-1,+1,-1);
    glEnd();
    //  Bottom
    // glColor3f(1,0,1);
    glBegin(GL_QUADS);
    glNormal3f( 0,-1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
-   glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
-   glTexCoord2f(1,1); glVertex3f(+1,-1,+1);
-   glTexCoord2f(0,1); glVertex3f(-1,-1,+1);
+   glTexCoord2f(1*texscale,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1*texscale,1*texscale); glVertex3f(+1,-1,+1);
+   glTexCoord2f(0,1*texscale); glVertex3f(-1,-1,+1);
    glEnd();
    //  Undo transofrmations
    glPopMatrix();
@@ -245,90 +246,90 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans,
 void bridge() {
    // poles 
    glPushMatrix();
-   Cube(-1.5,0,0.02,0.05,1.5,0.05,0,3);
-   Cube(-1.5,0,0.48,0.05,1.5,0.05,0,3);
-   Cube(1.5,0,0.02,0.05,1.5,0.05,0,3);
-   Cube(1.5,0,0.48,0.05,1.5,0.05,0,3);
+   Cube(-1.5,0,0.02,0.05,1.5,0.05,0,3,3);
+   Cube(-1.5,0,0.48,0.05,1.5,0.05,0,3,3);
+   Cube(1.5,0,0.02,0.05,1.5,0.05,0,3,3);
+   Cube(1.5,0,0.48,0.05,1.5,0.05,0,3,3);
    glPopMatrix();
    // support
    // left
    glPushMatrix();
-   Cube(-1.5,0.2,0.25,0.02,0.06,0.2,0,3);
-   Cube(-1.5,0.6,0.25,0.02,0.06,0.2,0,3);
-   Cube(-1.5,1.0,0.25,0.02,0.06,0.2,0,3);
-   Cube(-1.5,1.41,0.25,0.02,0.06,0.2,0,3);
+   Cube(-1.5,0.2,0.25,0.02,0.06,0.2,0,3,3);
+   Cube(-1.5,0.6,0.25,0.02,0.06,0.2,0,3,3);
+   Cube(-1.5,1.0,0.25,0.02,0.06,0.2,0,3,3);
+   Cube(-1.5,1.41,0.25,0.02,0.06,0.2,0,3,3);
    glPopMatrix();
    // right
    glPushMatrix();
-   Cube(1.5,0.2,0.25,0.02,0.06,0.2,0,3);
-   Cube(1.5,0.6,0.25,0.02,0.06,0.2,0,3);
-   Cube(1.5,1.0,0.25,0.02,0.06,0.2,0,3);
-   Cube(1.5,1.41,0.25,0.02,0.06,0.2,0,3);
+   Cube(1.5,0.2,0.25,0.02,0.06,0.2,0,3,3);
+   Cube(1.5,0.6,0.25,0.02,0.06,0.2,0,3,3);
+   Cube(1.5,1.0,0.25,0.02,0.06,0.2,0,3,3);
+   Cube(1.5,1.41,0.25,0.02,0.06,0.2,0,3,3);
    glPopMatrix();
    // cross bars
    // left
    glPushMatrix();
    glTranslated(0,0.1,0);
    glPushMatrix();
-   Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
-   Cube(-1.5,-0.50,0.25,0.03,0.02,0.2,0,3);
-   Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
-   Cube(-1.5,-1.1,0.25,0.03,0.02,0.2,0,3);
+   Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3,1);
+   Cube(-1.5,-0.50,0.25,0.03,0.02,0.2,0,3,1);
+   Cube(-1.5,-0.8,0.25,0.03,0.02,0.2,0,3,1);
+   Cube(-1.5,-1.1,0.25,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
    
    glPushMatrix();
    glTranslated(-1.5,-0.65,0.25);
    glRotated(45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
    
    glPushMatrix();
    glTranslated(-1.5,-0.95,0.25);
    glRotated(45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
    
    glPushMatrix();
    glTranslated(-1.5,-0.65,0.25);
    glRotated(-45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
 
    glPushMatrix();
    glTranslated(-1.5,-0.95,0.25);
    glRotated(-45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
    // right pole
    glPushMatrix();
-   Cube(1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
-   Cube(1.5,-0.50,0.25,0.03,0.02,0.2,0,3);
-   Cube(1.5,-0.8,0.25,0.03,0.02,0.2,0,3);
-   Cube(1.5,-1.1,0.25,0.03,0.02,0.2,0,3);
+   Cube(1.5,-0.8,0.25,0.03,0.02,0.2,0,3,1);
+   Cube(1.5,-0.50,0.25,0.03,0.02,0.2,0,3,1);
+   Cube(1.5,-0.8,0.25,0.03,0.02,0.2,0,3,1);
+   Cube(1.5,-1.1,0.25,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
    
    glPushMatrix();
    glTranslated(1.5,-0.65,0.25);
    glRotated(45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
 
    glPushMatrix();
    glTranslated(1.5,-0.95,0.25);
    glRotated(45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
 
    glPushMatrix();
    glTranslated(1.5,-0.65,0.25);
    glRotated(-45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
 
    glPushMatrix();
    glTranslated(1.5,-0.95,0.25);
    glRotated(-45,1,0,0);
-   Cube(0,0,0,0.03,0.02,0.2,0,3);
+   Cube(0,0,0,0.03,0.02,0.2,0,3,1);
    glPopMatrix();
 
    glPopMatrix();
@@ -337,7 +338,7 @@ void bridge() {
    // road 
    glPushMatrix();
    glRotated(90,0,1,0);
-   Cube(-0.25,-0.2,0.0,0.2,0.03,3.5,0,0);
+   Cube(-0.25,-0.2,0.0,0.2,0.03,3.5,0,0,1);
    glPopMatrix();
 
    // road support
@@ -347,26 +348,26 @@ void bridge() {
    for (float i = 0.0;i<7;i+=0.18) {
       glPushMatrix();
       glTranslated(-3.5+i,-0.3,0.44);
-      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3,1);
       glTranslated(.18,0,0);
-      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0,0.01,0.07,0.01,0,3,1);
       glTranslated(-0.09,-0.08,0);
-      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3,1);
       glTranslated(0,0.08,0);  
-      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3,1);
       reflect = 1 - reflect;
       glPopMatrix();
    }
    for (float i = 0.0;i<7;i+=0.18) {
       glPushMatrix();
       glTranslated(-3.5+i,-0.3,0.06);
-      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3,1);
       glTranslated(.18,0,0);
-      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0,0.01,0.07,0.01,0,3,1);
       glTranslated(-0.09,-0.08,0);
-      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3,1);
       glTranslated(0,0.08,0);  
-      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3,1);
       reflect = 1 - reflect;
       glPopMatrix();
    }
@@ -374,13 +375,13 @@ void bridge() {
       glPushMatrix();
       glTranslated(-3.5+i,-0.4,0.14);
       glRotated(90,1,0,0);
-      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3,1);
       glTranslated(.18,0,0);
-      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0,0.01,0.07,0.01,0,3,1);
       glTranslated(-0.09,-0.08,0);
-      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3,1);
       glTranslated(0,0.08,0);  
-      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3,1);
       reflect = 1 - reflect;
       glPopMatrix();
    }
@@ -388,27 +389,21 @@ void bridge() {
       glPushMatrix();
       glTranslated(-3.5+i,-0.4,0.36);
       glRotated(-90,1,0,0);
-      Cube(0,0,0.0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0.0,0.01,0.07,0.01,0,3,1);
       glTranslated(.18,0,0);
-      Cube(0,0,0,0.01,0.07,0.01,0,3);
+      Cube(0,0,0,0.01,0.07,0.01,0,3,1);
       glTranslated(-0.09,-0.08,0);
-      Cube(0,0,0.0,0.1,0.01,0.01,0,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,0,3,1);
       glTranslated(0,0.08,0);
       glRotated(180,0,1,0);  
-      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3);
+      Cube(0,0,0.0,0.1,0.01,0.01,reflect?-45:45,3,1);
       reflect = 1 - reflect;
       glPopMatrix();
    }
    glPushMatrix();
-   glColor3f(1,0.6,0);
    glTranslated(0,-0.40,0.25);
-   Cube(0,0,0,3.5,0.01,0.04,0,3);
+   Cube(0,0,0,3.5,0.01,0.04,0,3,1);
    glPopMatrix();
-
-
-
-   // glPopMatrix();
-
 
 
 
@@ -419,13 +414,13 @@ void bridge() {
       x1 += .02;  
       glTranslated(x1,0,0);
       // glColor3f(0,0,1);
-      Cube(0,-0.15,0.44,.001,0.04,0.003,0,3);
-      Cube(0,-0.15,0.06,.001,0.04,0.003,0,3);
+      Cube(0,-0.15,0.44,.001,0.04,0.003,0,3,1);
+      Cube(0,-0.15,0.06,.001,0.04,0.003,0,3,1);
       glPopMatrix();
    }
    // top rails
-   Cube(0,-0.11,0.44,3.5,0.002,0.004,0,3);
-   Cube(0,-0.11,0.06,3.5,0.002,0.004,0,3);
+   Cube(0,-0.11,0.44,3.5,0.002,0.004,0,3,1);
+   Cube(0,-0.11,0.06,3.5,0.002,0.004,0,3,1);
 
 
    
@@ -633,8 +628,19 @@ void bridge() {
       float hyp = sqrt(pow(t_array[i-1][0] - x1,2) + pow(t_array[i-1][1] - y1,2));
       glScaled(0.1,0.1,hyp);
       cylinder(0.3,1,1,0,0,4);
-
       glPopMatrix();
+      glPushMatrix();
+      Cube(-3,-0.8,0,0.1,0.85,0.05,0,5,1);
+      Cube(-3,-0.8,0.5,0.1,0.85,0.05,0,5,1);
+      Cube(3,-0.8,0,0.1,0.85,0.05,0,5,1);
+      Cube(3,-0.8,0.5,0.1,0.85,0.05,0,5,1);
+      Cube(-1.5,-1.52,0.25,0.25,0.1,0.5,0,5,1);
+      Cube(1.5,-1.52,0.25,0.25,0.1,0.5,0,5,1);
+      glPopMatrix();
+      
+   
+
+
      
    }
 }  
@@ -655,7 +661,6 @@ void water() {
    glBegin(GL_QUADS);
     // TODO:fix moving water 
    double time = 0.00001 * glutGet(GLUT_ELAPSED_TIME);
-   double time1 = 0;
    glNormal3f(0,+1,0);
    glTexCoord2f(0,time);glVertex3f(-1,0,+1);
    glTexCoord2f(1,time);glVertex3f(+1,0,+1);
@@ -828,14 +833,6 @@ void display()
    glLoadIdentity();
    double Ex = 0; double Ey = 0; double Ez = 0;double Cx = 0; double Cy = 0; double Cz = 0;
    if (mode) {
-      // float xtrans = -xpos;
-      // float ztrans = -zpos;
-      // float ytrans = -ypos;
-      // float sceneroty = 360.0f - yrot;
-
-      // glRotatef(ph,1,0,0);
-      // glRotatef(sceneroty,0,1,0);
-      // glTranslatef(xtrans,ytrans,ztrans);
       Ex = xcar;
       Ey = -0.05;
       Ez = 0.3;
@@ -852,20 +849,7 @@ void display()
 
    }
    //  Light switch
-   if (fog) {
-      glClearColor(0.5f,0.5f,0.5f,1.0f);          // We'll Clear To The Color Of The Fog ( Modified )
-      glFogi(GL_FOG_MODE, fogMode[fogfilter]);        // Fog Mode
-      glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-      glFogf(GL_FOG_DENSITY, 0.4f);              // How Dense Will The Fog Be
-      glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
-      glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
-      glFogf(GL_FOG_END, 5.0f);               // Fog End Depth
-      glEnable(GL_FOG);
-   }
-   else {   
-      glDisable(GL_FOG);
-      glClearColor(0,0,0,1); 
-   }
+   
    if (light)
    {
       //  Translate intensity to color vectors
@@ -913,10 +897,8 @@ void display()
         glPushMatrix();
         glTranslated(xcar,0,0);
         car(0.75,4);
-        // gluLookAt(xcar,,Ez , xcar,0,0 , 0,Cos(ph),0);
         glPopMatrix();
         glPushMatrix();
-        // glTranslated(0,0.0,-0.2);
         glTranslated(-xcar,0,-0.2);
         car(0.75,4);
         glPopMatrix();
@@ -926,7 +908,7 @@ void display()
    else {
       car(0.75,5);
       
-      glTranslated(5.7,0.0,-0.2);
+      glTranslated(1,0.0,-0.2);
       car(0.75,5);
    }
       glPopMatrix();
@@ -1070,11 +1052,9 @@ void key(unsigned char ch,int x,int y)
    }
    else if (ch == '2') {
       th = ph = 0;
-      mode = 1;
+      mode = 0;
    }
-   else if (ch == 'f' || ch == 'F') {
-      fog = 1-fog;
-   }
+  
    else if (ch == 'r' || ch == 'R') {
       race = 1-race;
    }
@@ -1123,13 +1103,18 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
    //  Load textures
+
    texture[0] = LoadTexBMP("road1.bmp");
    texture[1] = LoadTexBMP("road2.bmp");
    texture[2] = LoadTexBMP("water2.bmp");
    texture[3] = LoadTexBMP("golden2.bmp");
    texture[4] = LoadTexBMP("golden1.bmp");
-   texture[5] = LoadTexBMP("00.bmp");
+   texture[5] = LoadTexBMP("conrete.bmp");
    texture[6] = LoadTexBMP("water3.bmp");
+   glBindTexture(GL_TEXTURE_2D,texture[3]);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();
