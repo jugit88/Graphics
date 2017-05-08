@@ -1,19 +1,21 @@
 /*
- *  Textures and Lighting-Homework 3
+ *  Final Project Golden Gate Bridge
+ *  Jeremy Udis Graphics
  *
- *  Demonstrates using lighting and textures. The 3D object in this scene is a primitive replica of
- *  the parthenon in Athens, Greece. Today the building has eroded significantly so this drawing tries to
- *  emulate the structure's appearance upon completion.  
+ *  A few things I'd like to point out: I used blending to make the water transparent. If you press
+ *  the arrow key down and go under water you can see the detail of the support beams underneath the bridge.
+ *  I also modified the texture coords to give the effect that the water is moving. In addition, I added
+ *  cars on the bridge. I also used blending to represent the windsheild+hatch. If you press the r key, it determines if the cars move. I added a 'car perspective'
+ *  which puts the user in the perspective of the car(to do this press '1', to go back to default view, press '2').
+ *  To do the prior 2 tasks I used the time elasped method. The suspension cables were created by plotting points for a parabola
+ *  and drawing many cylinders in between them.      
  *
  *  Key bindings:
  *  l          Toggle lighting on/off
  *  t          Change textures
- *  f/F        Toggle Fog
  *  r          Toggle between moving and non moving cars
  *  1          Enter first person 'car' mode
  *  2          Enter perspective mode(default)
- *  v/c/b/z    Zoom in/out/left/right in FP mode
- *  m          Toggles texture mode modulate/replace
  *  a/A        decrease/increase ambient light
  *  d/D        decrease/increase diffuse light
  *  s/S        decrease/increase specular light
@@ -109,13 +111,9 @@ static void Cube(double x,double y,double z,
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
 
    // glColor3f(1,1,1);
-   glBindTexture(GL_TEXTURE_2D,texture[texnum]);
-   
-   // glEnable(GL_BLEND);
-   // glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+   glBindTexture(GL_TEXTURE_2D,texture[texnum]);   
    //  Cube
    //  Front
-   // transparent ? glColor3f(1,1,0): glColor4f(0,0,1)
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,+1);
    glTexCoord2f(0,0); glVertex3f(-1,-1,+1);
@@ -630,12 +628,12 @@ void bridge() {
       cylinder(0.3,1,1,0,0,4);
       glPopMatrix();
       glPushMatrix();
-      Cube(-3,-0.8,0,0.1,0.85,0.05,0,5,1);
-      Cube(-3,-0.8,0.5,0.1,0.85,0.05,0,5,1);
-      Cube(3,-0.8,0,0.1,0.85,0.05,0,5,1);
-      Cube(3,-0.8,0.5,0.1,0.85,0.05,0,5,1);
-      Cube(-1.5,-1.52,0.25,0.25,0.1,0.5,0,5,1);
-      Cube(1.5,-1.52,0.25,0.25,0.1,0.5,0,5,1);
+      Cube(-3,-0.9,0,0.1,1,0.05,0,5,1);
+      Cube(-3,-0.9,0.5,0.1,1,0.05,0,5,1);
+      Cube(3,-0.9,0,0.1,1,0.05,0,5,1);
+      Cube(3,-0.9,0.5,0.1,1,0.05,0,5,1);
+      Cube(-1.5,-2.4,0.25,0.25,1,0.5,0,5,2);
+      Cube(1.5,-2.4,0.25,0.25,1,0.5,0,5,2);
       glPopMatrix();
       
    
@@ -681,12 +679,12 @@ void car(float r,int texnum) {
    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
    glPushMatrix();
    // glEnable(GL_TEXTURE_2D);
-   glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
+   // glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    // glBindTexture(GL_TEXTURE_2D,texture[texnum]);
    // move car on road
    glTranslated(0,-0.15,0.3);
    glScaled(r,r,r);
-   glColor3f(0,1,0);
+   glColor3f(0,0.3,0.6);
    glBegin(GL_POLYGON);
    
       
@@ -702,7 +700,7 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.025,0,0.15);
    glEnd();
       // size -z
-
+   glColor3f(0,0.3,0.6);
    glBegin(GL_POLYGON);
       glNormal3f(0,0,-1);
       glTexCoord2f(0,0); glVertex3f(-0.3,0,0.0);
@@ -715,16 +713,20 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.025,0,0);
    glEnd();
    // windshield
-   glColor3f(1,1,1);
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_ONE,GL_ONE);
+   glColor3f(0.5,0.5,0.5);
    glBegin(GL_QUAD_STRIP);
-      glNormal3f(-1,1,0);
+      glNormal3f(-0.5,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.25,0.05,0.15);
       glTexCoord2f(1,0); glVertex3f(-0.2,0.1,0.15);
       glTexCoord2f(1,1); glVertex3f(-0.25,0.05,0.0);
       glTexCoord2f(0,1); glVertex3f(-0.2,0.1,0.0); 
    glEnd();
+   glDisable(GL_BLEND);
    
    // bumper
+   glColor3f(0,0.3,0.6);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(-1,0,0);
       glTexCoord2f(0,0); glVertex3f(-0.3,0,0.15);
@@ -733,6 +735,7 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.3,0.05,0.0);
    glEnd();
    // hood
+   glColor3f(0,0.3,0.6);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(0,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.3,0.05,0.15);
@@ -741,6 +744,7 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.25,0.05,0.0);
    glEnd();
    // roof
+   glColor3f(0,0.3,0.6);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(0,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.2,0.1,0.15);
@@ -749,6 +753,9 @@ void car(float r,int texnum) {
       glTexCoord2f(1,1); glVertex3f(-0.15,0.1,0.0);
    glEnd();
    // back hatch
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_ONE,GL_ONE);
+   glColor3f(0.5,0.5,0.5);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(1,0.7,0);
       glTexCoord2f(0,0); glVertex3f(-0.15,0.1,0.15);
@@ -756,7 +763,9 @@ void car(float r,int texnum) {
       glTexCoord2f(1,1); glVertex3f(-0.1,0.05,0.15);
       glTexCoord2f(0,1); glVertex3f(-0.1,0.05,0.0);
    glEnd();
+   glDisable(GL_BLEND);
    // trunk
+   glColor3f(0,0.3,0.6);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(0,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.1,0.05,0.15);
@@ -765,6 +774,7 @@ void car(float r,int texnum) {
       glTexCoord2f(0,1); glVertex3f(-0.05,0.05,0.0);
    glEnd();
    // back bumper
+   glColor3f(0,0.3,0.6);
    glBegin(GL_QUAD_STRIP);
       glNormal3f(1,1,0);
       glTexCoord2f(0,0); glVertex3f(-0.05,0.05,0.15);
@@ -779,7 +789,7 @@ void car(float r,int texnum) {
    cylinder(0.025,0.001,1,0,-0.13,5);
    
    glPopMatrix();
-   glDisable(GL_TEXTURE_2D);
+   // glDisable(GL_TEXTURE_2D);
 
 
 
@@ -896,20 +906,20 @@ void display()
         t1 = t2;
         glPushMatrix();
         glTranslated(xcar,0,0);
-        car(0.75,4);
+        car(0.75,1);
         glPopMatrix();
         glPushMatrix();
         glTranslated(-xcar,0,-0.2);
-        car(0.75,4);
+        car(0.75,1);
         glPopMatrix();
 
       }
    }
    else {
-      car(0.75,5);
+      car(0.75,1);
       
       glTranslated(1,0.0,-0.2);
-      car(0.75,5);
+      car(0.75,1);
    }
       glPopMatrix();
       
@@ -979,9 +989,7 @@ void key(unsigned char ch,int x,int y)
    //  Reset view angle
    else if (ch == '0')
       th = ph = 0;
-   //  Toggle texture mode
-   // else if (ch == 'm' || ch == 'M')
-   //    mode = 1-mode;
+   
    //  Toggle axes
    else if (ch == 'x' || ch == 'X')
       axes = 1-axes;
@@ -1026,27 +1034,7 @@ void key(unsigned char ch,int x,int y)
       rep++;
    else if (ch=='-' && rep>1)
       rep--;
-   else if (ch == 'v') {
-      xpos -= Sin(th) * 0.5;
-      zpos -= Cos(th) * 0.5;
-   }
-   else if (ch == 'b') {
-      xpos -= Cos(th) * 0.5;
-      zpos += Sin(th) * 0.5;
-   }
-   else if (ch == 'c') {
-      xpos += Sin(th) * 0.5;
-      zpos += Cos(th) * 0.5;
-   }
-   else if (ch == 'z') {
-      xpos += Cos(th) * 0.5;
-      zpos -= Sin(th) * 0.5;
-   }
    else if (ch == '1') {
-      // xpos = 0;
-      // zpos = 10;
-      // ypos = 1.5;
-      // th = ph = yrot = 0;
       th = 90;
       mode = 1;
    }
@@ -1105,12 +1093,12 @@ int main(int argc,char* argv[])
    //  Load textures
 
    texture[0] = LoadTexBMP("road1.bmp");
-   texture[1] = LoadTexBMP("road2.bmp");
+   // texture[1] = LoadTexBMP("paint.bmp");
    texture[2] = LoadTexBMP("water2.bmp");
    texture[3] = LoadTexBMP("golden2.bmp");
    texture[4] = LoadTexBMP("golden1.bmp");
    texture[5] = LoadTexBMP("conrete.bmp");
-   texture[6] = LoadTexBMP("water3.bmp");
+   // texture[6] = LoadTexBMP("water3.bmp");
    glBindTexture(GL_TEXTURE_2D,texture[3]);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);

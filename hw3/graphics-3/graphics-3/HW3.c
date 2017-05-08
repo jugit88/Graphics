@@ -355,6 +355,7 @@ void display()
    
    //  Draw scene
    parthenon();
+   // cube(0,0,1,0.2,1.5,0.2,90);
 
    
   
@@ -376,7 +377,7 @@ void display()
 void idle()
 {
    //  Elapsed time in seconds
-   double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
+   double t = glutGet(GLUT_ELAPSED_TIME) * .001;
    zh = fmod(90*t,360.0);
    //  Tell GLUT it is necessary to redisplay the scene
    glutPostRedisplay();

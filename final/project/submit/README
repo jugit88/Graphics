@@ -1,0 +1,25 @@
+
+   Final Project Golden Gate Bridge
+   Jeremy Udis Graphics
+ 
+   A few things I'd like to point out: I used blending to make to water transparent. If you press
+   the arrow key down and go under water you can see the detail of the support beams underneath the bridge.
+   I also modified the texture coords to give the effect that the water is moving. In addition, I added cars on the bridge. I also used blending to represent the windsheild+hatch. If you press the r key, it  determines if the cars move. I added a 'car perspective' which puts the user in the perspective of the car(to do this press '1', to go back to default view, press '2'). To do the prior 2 tasks I used the time elasped method. The suspension cables were created by plotting points for a parabola and drawing many cylinders in between them.      
+ 
+   Key bindings:
+   l          Toggle lighting on/off
+   t          Change textures
+   r          Toggle between moving and non moving cars
+   1          Enter first person 'car' mode
+   2          Enter perspective mode(default)
+   a/A        decrease/increase ambient light
+   d/D        decrease/increase diffuse light
+   s/S        decrease/increase specular light
+   e/E        decrease/increase emitted light
+   n/N        Decrease/increase shininess
+   []         Lower/rise light
+   x          Toggle axes
+   arrows     Change view angle
+   PgDn/PgUp  Zoom in and out
+   0          Reset view angle
+   ESC        Exit

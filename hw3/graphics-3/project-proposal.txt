@@ -1,0 +1,8 @@
+My goal is to create a scene using OpenGL of various landmarks around the world. An example of such a structure would be the golden gate bridge or the parthenon in Athens. In particular, I will draw 3D objects 
+that try to emulate the places I've traveled to; the places that resonate with my personal experieces.  
+
+The scene will contain many of these landmarks scattered around. The user will be able to traverse the scene in first person or from a distance. 
+
+I will create all of the objects myself in the source code. I will use textures to add realism to the scene. In addition, I will use lighting to add contrast and perspective. I will add multiple features each structures environment such as fog to the golden gate bridge/ferry building 
+
+In addition the landmark itself I will add a small piece of the surrounding environment. For example, I will add 

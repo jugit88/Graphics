@@ -1,13 +1,8 @@
 /*
- *  Shaders
- *
- *  Demonstrate shaders:
- *    Simple shaders
- *    Vertex lighting
- *    Procedural textures
- *    Toon shader
- *    Pixel lighting
- *    Textured lookup
+ *  Final Project: Golden Gate Bridge
+ *  Todo: Add detail to the bridge and possibly add water to the scene as well. 
+ *  Add Textures and appropriate shaders
+ *  Optimize performace of program(slight latency)
  *
  *  Key bindings:
  *  m/M        Cycle through shaders
@@ -41,6 +36,11 @@ int zh=90;        //  Light azimuth
 int suza=0;       //  Object
 float Ylight=2;   //  Light elevation
 float x = 0;float y = 0;float xp = 0; float yp = 0;float xpos = 0;float ypos = 0;
+int alpha = 70;
+int fog = 0;
+int emission  =   0;  // Emission intensity (%)
+float shinyvec[1];
+
 
 #define MODE 8
 int shader[MODE] = {0,0,0,0,0,0,0,0}; //  Shader programs
@@ -91,17 +91,6 @@ void cables1(float arr[][3]) {
       yp = pow(4.1*xp/5,2);
    }
 } 
-void cables2(float arr[][3]) {
-   int i;
-   for (i = 0; i < 2950;i++) {
-      arr[i][0] = xpos;
-      arr[i][1] = ypos;
-      arr[i][2] = 0;
-      xpos -= 0.0005;
-      ypos = pow(4.1*xpos/5,2);
-   }
-} 
-
 
 /*
  *  Draw a cube
@@ -114,15 +103,28 @@ static void Cube(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
 {
-   //  Save transformation
+   // float white[] = {1,1,1,1};
+   // float Emission[]  = {0.0,0.0,0.01*emission,1.0};
+   // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+   // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
+   // //  Save transformation
    glPushMatrix();
    //  Offset
    glTranslated(x,y,z);
+   glRotated(th,0,0,1);
    glScaled(dx,dy,dz);
-   glRotated(th,1,0,0);
+
+   glEnable(GL_TEXTURE_2D);
+   // glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
+   // // glColor3f(1,1,1);
+   // glBindTexture(GL_TEXTURE_2D,texture[4]);
+   
+   // glEnable(GL_BLEND);
+   // glBlendFunc(GL_SRC_ALPHA,GL_ONE);
    //  Cube
    //  Front
-   glColor3f(1,0,0);
+   glColor3f(1,.2,0);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,+1);
    glTexCoord2f(0,0); glVertex3f(-1,-1,+1);
@@ -131,7 +133,7 @@ static void Cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1,+1);
    glEnd();
    //  Back
-   glColor3f(0,0,1);
+   // glColor3f(0,0,1);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,-1);
    glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
@@ -140,7 +142,7 @@ static void Cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+1,-1);
    glEnd();
    //  Right
-   glColor3f(1,1,0);
+   // glColor3f(1,1,0);
    glBegin(GL_QUADS);
    glNormal3f(+1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
@@ -149,7 +151,7 @@ static void Cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+1,+1);
    glEnd();
    //  Left
-   glColor3f(0,1,0);
+   // glColor3f(0,1,0);
    glBegin(GL_QUADS);
    glNormal3f(-1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -158,7 +160,7 @@ static void Cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
    glEnd();
    //  Top
-   glColor3f(0,1,1);
+   // glColor3f(0,1,1);
    glBegin(GL_QUADS);
    glNormal3f( 0,+1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,+1,+1);
@@ -167,7 +169,7 @@ static void Cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
    glEnd();
    //  Bottom
-   glColor3f(1,0,1);
+   // glColor3f(1,0,1);
    glBegin(GL_QUADS);
    glNormal3f( 0,-1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -177,6 +179,8 @@ static void Cube(double x,double y,double z,
    glEnd();
    //  Undo transofrmations
    glPopMatrix();
+   // glDisable(GL_BLEND);
+   glDisable(GL_TEXTURE_2D);
 }
 void Init(void)
 {
@@ -213,7 +217,7 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
       while( angle < PI*2 ) {
             x = radius * cos(angle);
             y = radius * sin(angle);
-            glNormal3f(x,0,y);
+            glNormal3f(x,y,0);
             glTexCoord2f(x,y); glVertex3f(x, y , height);
             glTexCoord2f(x,y); glVertex3f(x, y , 0);
             angle = angle + angle_stepsize;
@@ -240,21 +244,27 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
  }
 void bridge() {
    // poles 
+   glPushMatrix();
    Cube(-1.5,0,0.02,0.05,1.5,0.05,0);
    Cube(-1.5,0,0.48,0.05,1.5,0.05,0);
    Cube(1.5,0,0.02,0.05,1.5,0.05,0);
    Cube(1.5,0,0.48,0.05,1.5,0.05,0);
+   glPopMatrix();
    // support on poles
    // left
+   glPushMatrix();
    Cube(-1.5,0.2,0.25,0.02,0.06,0.2,0);
    Cube(-1.5,0.6,0.25,0.02,0.06,0.2,0);
    Cube(-1.5,1.0,0.25,0.02,0.06,0.2,0);
    Cube(-1.5,1.41,0.25,0.02,0.06,0.2,0);
+   glPopMatrix();
    // right
+   glPushMatrix();
    Cube(1.5,0.2,0.25,0.02,0.06,0.2,0);
    Cube(1.5,0.6,0.25,0.02,0.06,0.2,0);
    Cube(1.5,1.0,0.25,0.02,0.06,0.2,0);
    Cube(1.5,1.41,0.25,0.02,0.06,0.2,0);
+   glPopMatrix();
 
    // road 
    Cube(0,-0.2,0.25,3.5,0.03,0.2,0);
@@ -272,6 +282,37 @@ void bridge() {
    // top rails
    Cube(0,-0.11,0.44,3.5,0.002,0.004,0);
    Cube(0,-0.11,0.06,3.5,0.002,0.004,0);
+   // TODO:water
+   glPushMatrix();
+   // glColor3f(0,0.4,1);
+   glTranslated(0,-1.5,0);
+   glScaled(10,10,10);
+   glBegin(GL_QUADS);
+      float time = 0.001 * glutGet(GLUT_ELAPSED_TIME);
+      // glPushMatrix();
+      glColor3f(0,0.4,1);
+      glNormal3f(0,+1,0);
+      glTexCoord2f(time,0); glVertex3f(0,0,0);
+      glTexCoord2f(time,1); glVertex3f(0,0,1);
+      glTexCoord2f(time,1); glVertex3f(1,0,1);
+      glTexCoord2f(time,0); glVertex3f(1,0,0);
+      
+
+   glEnd();
+   glPopMatrix();
+   
+
+
+
+
+
+   // bottom cross bars
+   glPushMatrix();
+   // glRotated(60,0,0,1);
+   // glScaled(0.05,0.5,0.1);
+   // Cube(0.5,0,0.6,0.05,0.3,0.05,-60);
+   glPopMatrix();
+
    int i;
    // suspension cables
    // right middle back
@@ -283,10 +324,13 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(t_array[i][0],t_array[i][1],0.02);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(t_array[i*70][0],t_array[i*70][1],0);
-            glVertex3f(t_array[i*70][0],-0.2,0);
-          glEnd();
+          // glBegin(GL_LINE_STRIP);            
+            glTranslated(t_array[i*70][0],t_array[i*70][1],0);
+            glRotated(90,1,0,0);
+            cylinder(0.005,t_array[i*70][1]+0.2,1,0,0);
+
+            // glVertex3f(t_array[i*70][0],-0.2,0);
+          // glEnd();
          
       }
       glRotated(result,0,0,1);
@@ -307,10 +351,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(n_array[i][0],n_array[i][1],0.02);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(n_array[i*70][0],n_array[i*70][1],0);
-            glVertex3f(n_array[i*70][0],-0.2,0);
-          glEnd();
+           glTranslated(n_array[i*70][0],n_array[i*70][1],0);
+            glRotated(90,1,0,0);
+            cylinder(0.005,n_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -331,10 +374,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(t_array[i][0],t_array[i][1],0.48);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(t_array[i*70][0],t_array[i*70][1],0);
-            glVertex3f(t_array[i*70][0],-0.2,0);
-          glEnd();
+           glTranslated(t_array[i*70][0],t_array[i*70][1],0);
+           glRotated(90,1,0,0);
+           cylinder(0.005,t_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -356,10 +398,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(n_array[i][0],n_array[i][1],0.48);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(n_array[i*70][0],n_array[i*70][1],0);
-            glVertex3f(n_array[i*70][0],-0.2,0);
-          glEnd();
+           glTranslated(n_array[i*70][0],n_array[i*70][1],0);
+           glRotated(90,1,0,0);
+           cylinder(0.005,n_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -382,10 +423,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(n_array[i][0],n_array[i][1],0.48);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(n_array[i*70][0],n_array[i*70][1],0);
-            glVertex3f(n_array[i*70][0],-0.2,0);
-          glEnd();
+          glTranslated(n_array[i*70][0],n_array[i*70][1],0);
+          glRotated(90,1,0,0);
+          cylinder(0.005,n_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -406,10 +446,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(n_array[i][0],n_array[i][1],0.02);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(n_array[i*70][0],n_array[i*70][1],0);
-            glVertex3f(n_array[i*70][0],-0.2,0);
-          glEnd();
+            glTranslated(n_array[i*70][0],n_array[i*70][1],0);
+            glRotated(90,1,0,0);
+            cylinder(0.005,n_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -430,10 +469,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(t_array[i][0],t_array[i][1],0.48);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(t_array[i*70][0],t_array[i*70][1],0);
-            glVertex3f(t_array[i*70][0],-0.2,0);
-          glEnd();
+            glTranslated(t_array[i*70][0],t_array[i*70][1],0);
+            glRotated(90,1,0,0);
+            cylinder(0.005,t_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -455,10 +493,9 @@ void bridge() {
       float result = a * 180.0/PI;
       glTranslated(t_array[i][0],t_array[i][1],0.02);
       if (i*70 < 2950) {
-          glBegin(GL_LINE_STRIP);            
-            glVertex3f(t_array[i*70][0],t_array[i*70][1],0);
-            glVertex3f(t_array[i*70][0],-0.2,0);
-          glEnd();
+            glTranslated(t_array[i*70][0],t_array[i*70][1],0);
+            glRotated(90,1,0,0);
+            cylinder(0.005,t_array[i*70][1]+0.2,1,0,0);
          
       }
       glRotated(result,0,0,1);
@@ -470,6 +507,7 @@ void bridge() {
       glPopMatrix();
      
    }
+
 
 
 }
@@ -495,15 +533,18 @@ void display()
    glEnable(GL_DEPTH_TEST);
    //  Undo previous transformations
    glLoadIdentity();
-   //  Perspective - set eye position
-   // glClearColor(0.5f,0.5f,0.5f,1.0f);          // We'll Clear To The Color Of The Fog ( Modified )
-   // glFogi(GL_FOG_MODE, fogMode[fogfilter]);        // Fog Mode
-   // glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-   // glFogf(GL_FOG_DENSITY, 0.4f);              // How Dense Will The Fog Be
-   // glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
-   // glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
-   // glFogf(GL_FOG_END, 5.0f);               // Fog End Depth
-   // glEnable(GL_FOG);    
+    // Perspective - set eye position
+   // fog
+   if (fog) {
+      glClearColor(0.5f,0.5f,0.5f,1.0f);          // We'll Clear To The Color Of The Fog ( Modified )
+      glFogi(GL_FOG_MODE, fogMode[fogfilter]);        // Fog Mode
+      glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
+      glFogf(GL_FOG_DENSITY, 0.4f);              // How Dense Will The Fog Be
+      glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
+      glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
+      glFogf(GL_FOG_END, 5.0f);               // Fog End Depth
+      glEnable(GL_FOG); 
+   }   
    if (proj)
    {
       double Ex = -2*dim*Sin(th)*Cos(ph);
@@ -542,7 +583,6 @@ void display()
    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,Shinyness);
    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,Specular);
    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
-   // fog
    
    //
    //  Draw scene
@@ -566,12 +606,7 @@ void display()
    //  Draw the teapot or cube
    glColor3f(0,1,1);
    glEnable(GL_TEXTURE_2D);
-   // if (obj==2)
-   //    glCallList(suza);
-   // else if (obj==1)
-   //    glutSolidTeapot(1.0);
-   // else
-   //    Cube(0,0,0,0.1,1.5,0.05,0);
+ 
    bridge();
    glDisable(GL_TEXTURE_2D);
    //  No shader for what follows
@@ -846,6 +881,7 @@ int main(int argc,char* argv[])
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+   
    glutInitWindowSize(600,600);
    glutCreateWindow("Shaders");
 #ifdef USEGLEW
@@ -863,17 +899,17 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
    //  Load object
-   suza = LoadOBJ("suzanne.obj");
+   // suza = LoadOBJ("suzanne.obj");
    //  Load texture
-   LoadTexBMP("pi.bmp");
+   // LoadTexBMP("pi.bmp");
    //  Create Shader Programs
-   shader[1] = CreateShaderProg("simple.vert","simple.frag");
-   shader[2] = CreateShaderProg("phong.vert","phong.frag");
-   shader[3] = CreateShaderProg("model.vert","brick.frag");
-   shader[4] = CreateShaderProg("model.vert","mandel.frag");
-   shader[5] = CreateShaderProg("toon.vert","toon.frag");
-   shader[6] = CreateShaderProg("pixlight.vert","pixlight.frag");
-   shader[7] = CreateShaderProg("texture.vert","texture.frag");
+   // shader[1] = CreateShaderProg("simple.vert","simple.frag");
+   // shader[2] = CreateShaderProg("phong.vert","phong.frag");
+   // shader[3] = CreateShaderProg("model.vert","brick.frag");
+   // shader[4] = CreateShaderProg("model.vert","mandel.frag");
+   // shader[5] = CreateShaderProg("toon.vert","toon.frag");
+   // shader[6] = CreateShaderProg("pixlight.vert","pixlight.frag");
+   // shader[7] = CreateShaderProg("texture.vert","texture.frag");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();

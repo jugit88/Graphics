@@ -1,7 +1,9 @@
 /*
- *  Textures and Lighting
+ *  Textures and Lighting-Homework 3
  *
- *  Demonstrates using lighting and textures.
+ *  Demonstrates using lighting and textures. The 3D object in this scene is a primitive replica of
+ *  the parthenon in Athens, Greece. Today the building has eroded significantly so this drawing tries to
+ *  emulate the structure's appearance upon completion.  
  *
  *  Key bindings:
  *  l          Toggle lighting on/off
@@ -23,8 +25,8 @@
 int mode=0;       //  Texture mode
 int ntex=0;       //  Cube faces
 int axes=0;       //  Display axes
-int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
+int th=-45;         //  Azimuth of view angle
+int ph=15;         //  Elevation of view angle
 int light=1;      //  Lighting
 int rep=1;        //  Repitition
 double asp=1;     //  Aspect ratio
@@ -70,8 +72,7 @@ static void cube(double x,double y,double z,
    glColor3f(1,1,1);
    glBindTexture(GL_TEXTURE_2D,texture[4]);
    //  Front
-   // glColor3f(1,0,0);
-   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[1]);
+  
    glBegin(GL_QUADS);
    glNormal3f( 0, 0, 1);
    glTexCoord2f(0,0); glVertex3f(-1,-.5, 1.6);
@@ -80,8 +81,7 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+.5, 1.6);
    glEnd();
    //  Back
-   // glColor3f(0,0,1);
-   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[2]);
+  
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,-1);
    glTexCoord2f(0,0); glVertex3f(+1,-.5,-1.6);
@@ -90,8 +90,7 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+.5,-1.6);
    glEnd();
    //  Right
-   // glColor3f(1,1,0);
-   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[3]);
+  
    glBegin(GL_QUADS);
    glNormal3f(+1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(+1,-.5,+1.6);
@@ -100,8 +99,7 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+.5,+1.6);
    glEnd();
    //  Left
-   // glColor3f(0,1,0);
-   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[4]);
+  
    glBegin(GL_QUADS);
    glNormal3f(-1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-.5,-1.6);
@@ -120,8 +118,7 @@ static void cube(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+.5,-1.6);
    glEnd();
    //  Bottom
-   // glColor3f(1,0,1);
-   // if (ntex) glBindTexture(GL_TEXTURE_2D,texture[6]);
+  
    glBegin(GL_QUADS);
    glNormal3f( 0,-1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-.5,-1.6);
@@ -142,7 +139,6 @@ void pyramid(double x,double y,double z,
    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
-   // glPushMatrix();
    //  Offset, scale and rotate
    glTranslated(x,y,z);
    glRotated(th,0,1,0);
@@ -155,39 +151,27 @@ void pyramid(double x,double y,double z,
    glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
       // Front
       
-      glNormal3f(0,0,1);
-      // glColor3f(1.0f, 1.0f, 1.0f);     // Red
+      glNormal3f(0,0.0,1);
       glTexCoord2f(0,0); glVertex3f( 0.0f, .25f, 0.0f);
-      // glColor3f(1.0f, 1.0f, 1.0f);     // Green
       glTexCoord2f(1,0); glVertex3f(-1.0f, -.25f, 1.0f);
-      // glColor3f(0.0f, 0.0f, 1.0f);     // Blue
       glTexCoord2f(0.5,1); glVertex3f(1.0f, -.25f, 1.0f);
  
       // Right
-      glNormal3f(1,0,0);
-      // glColor3f(1.0f, 1.0f, 1.0f);     // Red
+      glNormal3f(1,0.0,0);
       glTexCoord2f(0,0); glVertex3f(0.0f, .25f, 0.0f);
-      // glColor3f(0.0f, 0.0f, 1.0f);     // Blue
       glTexCoord2f(1,0); glVertex3f(1.0f, -0.25f, 1.0f);
-      // glColor3f(0.0f, .25f, 0.0f);     // Green
       glTexCoord2f(0.5,1); glVertex3f(1.0f, -.25f, -1.0f);
  
       // Back
-      glNormal3f(0,0,-1);
-      // glColor3f(1.0f, 1.0f, 1.0f);     // Red
+      glNormal3f(0,0.0,-1);
       glTexCoord2f(0,0); glVertex3f(0.0f, .25f, 0.0f);
-      // glColor3f(0.0f, .25f, 0.0f);     // Green
       glTexCoord2f(1,0); glVertex3f(1.0f, -.25f, -1.0f);
-      // glColor3f(1.0f, 1.0f, 1.0f);     // Blue
       glTexCoord2f(0.5,1); glVertex3f(-1.0f, -.25f, -1.0f);
  
       // Left
-      glNormal3f(-1,0,0);
-      // glColor3f(1.0f,1.0f,1.0f);       // Red
+      glNormal3f(-1,0.0,0);
       glTexCoord2f(0,0); glVertex3f( 0.0f, .25f, 0.0f);
-      // glColor3f(0.0f,0.0f,1.0f);       // Blue
       glTexCoord2f(1,0); glVertex3f(-1.0f,-.25f,-1.0f);
-      // glColor3f(0.0f,.25f,0.0f);       // Green
       glTexCoord2f(0.5,1); glVertex3f(-1.0f,-.25f, 1.0f);
    glEnd();   // Done drawing the pyramid
    glDisable(GL_TEXTURE_2D);
@@ -227,7 +211,6 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
    // tube
     glColor3f(1,1,0.8);
     glTranslated(xtrans,0,ztrans);
-    // glRotated(xrot,0,0,0);
     glScaled(s,s,s);
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
@@ -254,15 +237,16 @@ void cylinder(double radius,double height, double s,double xtrans,double ztrans)
             x = radius * cos(angle);
             y = radius * sin(angle);
             glNormal3f(x,0,y);
-            glVertex3f(x, height, y);
+            glTexCoord2f(x,height); glVertex3f(x, height, y);
             angle = angle + angle_stepsize;
         }
-        glVertex3f(radius, height, 0.0);
+        glTexCoord2f(radius,height); glVertex3f(radius, height, 0.0);
     glEnd();
     glDisable(GL_TEXTURE_2D);
 
     
 }
+// draw parthenon
 void parthenon() {
    // glRotated(90,0,0,0);
    // front pillars
@@ -286,16 +270,8 @@ void parthenon() {
    glTranslated(0,1.0,0);
    pyramid(-0.3,-0.38,-0.9,0.4,0.5,.95,0);
    cube(0.0,-1.3,0.0,1.2,0.1,0.7,0);
-   cube(0.0,-1.4,0.0,1.5,0.1,0.8,0);
-   cube(0.0,-1.5,0.0,1.8,0.1,0.9,0);
-   // cube(0.0,-1.6,0.0,2.1,0.1,1.0,0);
-
-
-
-
-
-
-
+   cube(0.0,-1.4,0.0,1.3,0.1,0.75,0);
+   cube(0.0,-1.5,0.0,1.4,0.1,0.8,0);
 }
 
 /*
@@ -375,8 +351,8 @@ void display()
    }
    else
       glDisable(GL_LIGHTING);
+   
    //  Draw scene
-   // cube(1,-0.5,2.0 , 0.5,0.5,0.5 , 0);
    parthenon();
 
    
@@ -526,7 +502,7 @@ int main(int argc,char* argv[])
    //  Request double buffered, true color window with Z buffering at 600x600
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
    glutInitWindowSize(600,600);
-   glutCreateWindow("Textures and Lighting");
+   glutCreateWindow("Parthenon");
    //  Set callbacks
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
@@ -534,12 +510,11 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
    //  Load textures
-   texture[0] = LoadTexBMP("crate.bmp");
-   texture[2] = LoadTexBMP("limestone2.bmp");
-   texture[3] = LoadTexBMP("carrara-marble-tiles.bmp");
+   // texture[2] = LoadTexBMP("limestone2.bmp");
+   // texture[3] = LoadTexBMP("carrara-marble-tiles.bmp");
    texture[4] = LoadTexBMP("limestone1.bmp");
-   texture[5] = LoadTexBMP("02.bmp");
-   texture[6] = LoadTexBMP("04.bmp");
+   texture[5] = LoadTexBMP("00.bmp");
+   // texture[6] = LoadTexBMP("04.bmp");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();

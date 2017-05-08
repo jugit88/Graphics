@@ -1,51 +1,89 @@
-# Example 15
-EXE=HW3
+##=============================================================================
+##
+## Makefile
+## Copyright (C) 2005  Julien Guertault
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+##
+##=============================================================================
 
-# Main target
-all: $(EXE)
+NAME		=	water
 
-#  MinGW
-ifeq "$(OS)" "Windows_NT"
-CFLG=-O3 -Wall
-LIBS=-lglut32cu -lglu32 -lopengl32
-CLEAN=del *.exe *.o *.a
-else
-#  OSX
-ifeq "$(shell uname)" "Darwin"
-CFLG=-O3 -Wall -Wno-deprecated-declarations
-LIBS=-framework GLUT -framework OpenGL
-#  Linux/Unix/Solaris
-else
-CFLG=-O3 -Wall
-LIBS=-lglut -lGLU -lGL -lm
-endif
-#  OSX/Linux/Unix/Solaris
-CLEAN=rm -f $(EXE) *.o *.a
-endif
+DIRECTORY	=	Water
 
-# Dependencies
-ex15.o: HW3.c CSCIx229.h
-fatal.o: fatal.c CSCIx229.h
-loadtexbmp.o: loadtexbmp.c CSCIx229.h
-print.o: print.c CSCIx229.h
-project.o: project.c CSCIx229.h
-errcheck.o: errcheck.c CSCIx229.h
-object.o: object.c CSCIx229.h
+ARCHIVE		=	tar -cvzf
 
-#  Create archive
-CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o
-	ar -rcs $@ $^
+CC		=	gcc
 
-# Compile rules
-.c.o:
-	gcc -c $(CFLG) $<
-.cpp.o:
-	g++ -c $(CFLG) $<
+ECHO		=	@echo
 
-#  Link
-HW3:HW3.o CSCIx229.a
-	gcc -O3 -o $@ $^   $(LIBS)
+RM		=	rm -f
 
-#  Clean
-clean:
-	$(CLEAN)
+SRC		=	main.c			\
+			noise.c
+
+CFLAGS		=	-Wall			\
+			-W			\
+			-Wstrict-prototypes	\
+			-Werror
+
+IFLAGS		=	-I/usr/include		\
+			-I/usr/include/GL	\
+			-I/usr/X11R6/include	\
+			-I/usr/X11R6/include/GL
+
+LFLAGS		=	-L/usr/lib		\
+			-L/usr/X11R6/lib	\
+			-lX11			\
+			-lGL			\
+			-lGLU			\
+			-lglut			\
+			-ljpeg
+
+OBJ		=	$(SRC:.c=.o)
+
+all :		$(NAME)
+
+$(NAME) :	$(OBJ)
+		$(CC) $(OBJ) $(LFLAGS) -o $(NAME)
+
+.c.o :
+		$(CC) $(CFLAGS) $(IFLAGS) $< -c -o $@
+
+clean :
+		$(RM) $(OBJ)
+		$(RM) *~ \#*\#
+
+distclean :	clean
+		$(RM) $(NAME)
+
+separator :
+		$(ECHO) "------------------------------------------"
+
+re :		clean separator all
+
+run :		all
+		./$(NAME)
+
+tarball :	clean separator
+		$(ECHO) "Archiving..."
+		cd .. && $(ARCHIVE) $(NAME).tar.gz $(DIRECTORY)
+		$(ECHO) "Done !"
+
+install :
+		$(ECHO) "Not implemented yet."
+
+love :
+		$(ECHO) "Sorry, I have a headache..."

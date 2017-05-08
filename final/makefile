@@ -13,7 +13,7 @@ else
 #  OSX
 ifeq "$(shell uname)" "Darwin"
 CFLG=-O3 -Wall -Wno-deprecated-declarations
-LIBS=-framework GLUT -framework OpenGL
+LIBS=-framework GLUT -framework OpenGL 
 #  Linux/Unix/Solaris
 else
 CFLG=-O3 -Wall
@@ -33,7 +33,7 @@ errcheck.o: errcheck.c CSCIx229.h
 object.o: object.c CSCIx229.h
 
 #  Create archive
-CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o
+CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o noise.o 
 	ar -rcs $@ $^
 
 # Compile rules
@@ -43,7 +43,7 @@ CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o
 	g++ -c $(CFLG) $<
 
 #  Link
-final:final.o CSCIx229.a
+final:final.o CSCIx229.a 
 	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean
